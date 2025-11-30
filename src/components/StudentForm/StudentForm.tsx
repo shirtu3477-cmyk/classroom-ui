@@ -1,7 +1,7 @@
 import React from "react";
+import { useFormik } from "formik";
 import { useStyles } from "./StudentForm.style";
 import { Box, TextField, Typography, FormControl, Button } from "@mui/material";
-import { useFormik } from "formik";
 
 interface StudentForm {
   id: string;

@@ -2,23 +2,23 @@ import React from "react";
 import { useFormik } from "formik";
 import { useStyles } from "./ClassForm.style";
 import { Box, TextField, Typography, FormControl, Button } from "@mui/material";
+import { createClass } from "../../api/api";
 
 interface ClassForm {
-  id: string;
+  id: number;
   name: string;
   maxSeats: number;
 }
 
 const ClassForm: React.FC = () => {
   const styles = useStyles();
-  const handleSubmit = (values: ClassForm) => {
-    console.log(values);
-    //TODO send POST request to api
+  const handleSubmit = async (values: ClassForm) => {
+    const response = await createClass({classId: values.id, ...values})
 
-    //TODO error handling
+    alert('created')
   };
   const formik = useFormik({
-    initialValues: { id: "", name: "", maxSeats: 0 },
+    initialValues: { id: 0, name: "", maxSeats: 0 },
     onSubmit: handleSubmit,
   });
   return (
@@ -29,6 +29,7 @@ const ClassForm: React.FC = () => {
           <TextField
             id="id"
             label="Class ID"
+            type="number"
             required
             value={formik.values.id}
             onChange={formik.handleChange}
