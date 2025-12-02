@@ -28,6 +28,14 @@ export const createClass = async (data: {
     const response = await classroom.post("/class", data);
     return response.data;
   } catch (e) {
-    return axios.isAxiosError(e) && { error: e.message, status: e.status };
+    return axios.isAxiosError(e) && { error: e.response?.data.error, status: e.status };
+  }
+}
+
+export const deleteClass = async (id: number) => {
+  try {
+    const response = await classroom.delete(`/class/${id}`);
+  } catch (e) {
+    return axios.isAxiosError(e) && { error: e.response?.data.error, status: e.status };
   }
 };

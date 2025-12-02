@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import { useStyles } from "./ClassForm.style";
 import { Box, TextField, Typography, FormControl, Button } from "@mui/material";
 import { createClass } from "../../api/api";
+import { toast } from "react-toastify";
 
 interface ClassForm {
   id: number;
@@ -13,9 +14,10 @@ interface ClassForm {
 const ClassForm: React.FC = () => {
   const styles = useStyles();
   const handleSubmit = async (values: ClassForm) => {
-    const response = await createClass({classId: values.id, ...values})
+    const response = await createClass({ classId: values.id, ...values });
 
-    alert('created')
+    if(response.data) toast.info(`Class ${response.data.id} was created`)
+    else toast.error(response.error)
   };
   const formik = useFormik({
     initialValues: { id: 0, name: "", maxSeats: 0 },
@@ -50,7 +52,7 @@ const ClassForm: React.FC = () => {
             onChange={formik.handleChange}
           />
           <Button type="submit" variant="contained">
-            Add Student
+            create class
           </Button>
         </FormControl>
       </form>

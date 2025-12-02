@@ -2,6 +2,7 @@ import Create from "./pages/Create/Create";
 import { createTheme } from "@mui/material";
 import Classes from "./pages/Classes/Classes";
 import Navbar from "./components/Navbar/Navbar";
+import { ToastContainer } from 'react-toastify';
 import Students from "./pages/Students/Students";
 import React, { useMemo, useState } from "react";
 import { ColorMode, Colors } from "./styles/theme";
@@ -13,7 +14,9 @@ const App: React.FC = () => {
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === ColorMode.LIGHT ? ColorMode.DARK : ColorMode.LIGHT));
+        setMode((prevMode) =>
+          prevMode === ColorMode.LIGHT ? ColorMode.DARK : ColorMode.LIGHT
+        );
       },
     }),
     [mode]
@@ -22,20 +25,25 @@ const App: React.FC = () => {
   const theme = useMemo(
     () =>
       createTheme({
-       palette: {primary: {main: mode === ColorMode.LIGHT ? Colors.LIGHT : Colors.DARK}}
+        palette: {
+          primary: {
+            main: mode === ColorMode.LIGHT ? Colors.LIGHT : Colors.DARK,
+          },
+        },
       }),
     [mode]
   );
-  
+
   return (
     <HashRouter>
       <ThemeProvider theme={theme}>
-          <Navbar colorMode={colorMode} />
-          <Routes>
-            <Route path="/classes" element={<Classes />} />
-            <Route path="/students" element={<Students />} />
-            <Route path="create" element={<Create />} />
-          </Routes>
+        <Navbar colorMode={colorMode} />
+        <Routes>
+          <Route path="/classes" element={<Classes />} />
+          <Route path="/students" element={<Students />} />
+          <Route path="create" element={<Create />} />
+        </Routes>
+        <ToastContainer />
       </ThemeProvider>
     </HashRouter>
   );
