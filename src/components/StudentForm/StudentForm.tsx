@@ -1,23 +1,30 @@
 import React from "react";
+import * as Yup from "yup";
 import { useFormik } from "formik";
+import { toast } from "react-toastify";
+import { createStudent } from "../../api/api";
 import { useStyles } from "./StudentForm.style";
+import { isValidILId } from "../../utils/validations";
+import { IStudentCreate } from "../../pages/Students/Students.types";
 import { Box, TextField, Typography, FormControl, Button } from "@mui/material";
 
-interface StudentForm {
-  id: string;
-  firstName: string;
-  lastName: string;
-  age: number;
-  profession: string;
-}
 
 const StudentForm: React.FC = () => {
-  const handleSubmit = (values: StudentForm) => {
-    console.log(values);
-    //TODO send POST request to api
+  const handleSubmit = async (values: IStudentCreate) => {
+    const response = await createStudent(values);
 
-    //TODO error handling
+    if (response.data) toast.info(`student ${response.data.id} was created`);
+    else toast.error(response.error);
   };
+
+  const studentSchema = Yup.object().shape({
+    id: Yup.string().test((value) => (value ? isValidILId(value) : false)),
+    firstName: Yup.string(),
+    lastName: Yup.string(),
+    age: Yup.number(),
+    profession: Yup.string(),
+  });
+
   const formik = useFormik({
     initialValues: {
       id: "",
@@ -26,6 +33,8 @@ const StudentForm: React.FC = () => {
       age: 0,
       profession: "",
     },
+    validationSchema: studentSchema,
+    validateOnChange: true,
     onSubmit: handleSubmit,
   });
   const styles = useStyles();
@@ -40,6 +49,9 @@ const StudentForm: React.FC = () => {
             required
             value={formik.values.id}
             onChange={formik.handleChange}
+            error={formik.errors.id ? true : false}
+            helperText={formik.errors.id && "input must be a valid IL id"}
+            color="info"
           />
           <TextField
             id="firstName"
@@ -47,6 +59,7 @@ const StudentForm: React.FC = () => {
             required
             value={formik.values.firstName}
             onChange={formik.handleChange}
+            color="info"
           />
 
           <TextField
@@ -55,6 +68,7 @@ const StudentForm: React.FC = () => {
             required
             value={formik.values.lastName}
             onChange={formik.handleChange}
+            color="info"
           />
 
           <TextField
@@ -62,6 +76,7 @@ const StudentForm: React.FC = () => {
             label="Age"
             value={formik.values.age}
             onChange={formik.handleChange}
+            color="info"
           />
 
           <TextField
@@ -70,6 +85,7 @@ const StudentForm: React.FC = () => {
             required
             value={formik.values.profession}
             onChange={formik.handleChange}
+            color="info"
           />
 
           <Button type="submit" variant="contained">
