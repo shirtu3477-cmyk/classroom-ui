@@ -1,12 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { IStudent } from "../../pages/Students/Students.types";
 
 export interface IClass {
   classId: number;
   name: string;
   maxSeats: number;
+  students: IStudent[];
 }
 
-export type ClassesState = IClass[]
+export type ClassesState = IClass[];
 
 const initialState: IClass[] = [];
 
@@ -19,9 +21,7 @@ export const classesSlice = createSlice({
     },
 
     removeClass(state, action) {
-      state = state.filter(
-        (clas) => clas.classId !== action.payload
-      );
+      state = state.filter((clas) => clas.classId !== action.payload);
       return state;
     },
 

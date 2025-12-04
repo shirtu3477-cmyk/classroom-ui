@@ -1,13 +1,12 @@
 import React from "react";
 import * as Yup from "yup";
-import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { createStudent } from "../../api/api";
 import { useStyles } from "./StudentForm.style";
+import { FormikErrors, useFormik } from "formik";
 import { isValidILId } from "../../utils/validations";
 import { IStudentCreate } from "../../pages/Students/Students.types";
 import { Box, TextField, Typography, FormControl, Button } from "@mui/material";
-
 
 const StudentForm: React.FC = () => {
   const handleSubmit = async (values: IStudentCreate) => {
@@ -18,11 +17,23 @@ const StudentForm: React.FC = () => {
   };
 
   const studentSchema = Yup.object().shape({
-    id: Yup.string().test((value) => (value ? isValidILId(value) : false)),
-    firstName: Yup.string(),
-    lastName: Yup.string(),
-    age: Yup.number(),
-    profession: Yup.string(),
+    id: Yup.string()
+      .test((value) => (value ? isValidILId(value) : false))
+      .required(),
+    firstName: Yup.string()
+      .required()
+      .matches(
+        /^[a-zA-Z\u0590-\u05FF\u200f\u200e ']+$/,
+        "no special characters allowed"
+      ),
+    lastName: Yup.string()
+      .required()
+      .matches(
+        /^[a-zA-Z\u0590-\u05FF\u200f\u200e ']+$/,
+        "no special characters allowed"
+      ),
+    age: Yup.number().integer().positive(),
+    profession: Yup.string().required().max(30),
   });
 
   const formik = useFormik({
@@ -34,7 +45,25 @@ const StudentForm: React.FC = () => {
       profession: "",
     },
     validationSchema: studentSchema,
-    validateOnChange: true,
+    validateOnChange: false,
+    validateOnBlur: false,
+    validate: (values) => {
+      const errors: FormikErrors<{
+        id: string;
+        firstName: string;
+        lastName: string;
+        age: number;
+        profession: string;
+      }> = {};
+      const combinedLength = values.firstName.length + values.lastName.length;
+
+      if (combinedLength > 30) {
+        errors.firstName = `length of fullname must be under 30 characters `;
+        errors.lastName = `length of fullname must be under 30 characters `;
+      }
+
+      return errors;
+    },
     onSubmit: handleSubmit,
   });
   const styles = useStyles();
@@ -46,7 +75,6 @@ const StudentForm: React.FC = () => {
           <TextField
             id="id"
             label="ID"
-            required
             value={formik.values.id}
             onChange={formik.handleChange}
             error={formik.errors.id ? true : false}
@@ -56,18 +84,20 @@ const StudentForm: React.FC = () => {
           <TextField
             id="firstName"
             label="First Name"
-            required
             value={formik.values.firstName}
             onChange={formik.handleChange}
+            error={formik.errors.firstName ? true : false}
+            helperText={formik.errors.firstName}
             color="info"
           />
 
           <TextField
             id="lastName"
             label="Last Name"
-            required
             value={formik.values.lastName}
             onChange={formik.handleChange}
+            error={formik.errors.lastName ? true : false}
+            helperText={formik.errors.lastName}
             color="info"
           />
 
@@ -76,15 +106,18 @@ const StudentForm: React.FC = () => {
             label="Age"
             value={formik.values.age}
             onChange={formik.handleChange}
+            error={formik.errors.age ? true : false}
+            helperText={formik.errors.age}
             color="info"
           />
 
           <TextField
             id="profession"
             label="Profession"
-            required
             value={formik.values.profession}
             onChange={formik.handleChange}
+            error={formik.errors.profession ? true : false}
+            helperText={formik.errors.profession}
             color="info"
           />
 

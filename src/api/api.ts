@@ -71,9 +71,8 @@ export const getStudents = async () => {
   }
 };
 
-
 export const deleteStudent = async (id: string) => {
-try {
+  try {
     await classroom.delete(`/student/${id}`);
   } catch (e) {
     return (
@@ -83,4 +82,18 @@ try {
       }
     );
   }
-}
+};
+
+export const assignToClass = async (id: string, classId: number) => {
+  try {
+    const response = await classroom.patch(`/student/${id}`, { classId: classId });
+    return response.data
+  } catch (e) {
+    return (
+      axios.isAxiosError(e) && {
+        error: e.response?.data.error,
+        status: e.status,
+      }
+    );
+  }
+};

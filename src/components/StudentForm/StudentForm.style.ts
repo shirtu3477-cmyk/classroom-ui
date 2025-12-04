@@ -1,15 +1,15 @@
 import { createStyles } from "../../styles/create-styles";
 
 export const useStyles = () =>
-    createStyles({
-        comp: {
-            margin: 150,
-        },
-        form: {
-            display:'flex',
-            flexDirection:'column',
-            justifyContent:'space-evenly',
-            height:450,
-            width: 250
-        },
-    });
+  createStyles({
+    comp: {
+      margin: "10%",
+    },
+    form: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-evenly",
+      height: '40vh',
+      width: '100%',
+    },
+  });

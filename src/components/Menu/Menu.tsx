@@ -14,7 +14,7 @@ const Menu: React.FC<IMenuProps> = ({ open, setOpen }) => {
     return <Drawer open={open} onClose={() => setOpen(!open)} >
         <Box style={styles.menu}>
             <MenuItem>
-                <Link style={styles.link} to="/classes" onClick={() => setOpen(false)}>Classes</Link>
+                <Link style={styles.link} to="/" onClick={() => setOpen(false)}>Classes</Link>
             </MenuItem>
             <MenuItem>
                 <Link style={styles.link} to="/students" onClick={() => setOpen(false)}>Students</Link>

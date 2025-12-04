@@ -1,8 +1,12 @@
+import React, { useState } from "react";
 import { useStyles } from "./Student.style";
+import { IStudent } from "./Students.types";
 import { deleteStudent, getStudents } from "../../api/api";
-import React, { useEffect, useState } from "react";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import ClassesDialog from "../../components/ClassesDialog/ClassesDialog";
 import {
   Button,
+  Dialog,
   Paper,
   Table,
   TableBody,
@@ -10,25 +14,23 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { IStudent } from "./Students.types";
 
 const Students: React.FC = () => {
   const styles = useStyles();
-  const [students, setStudents] = useState<IStudent[]>([]);
-  const fetchClasses = async () => {
-    const response = await getStudents();
-    setStudents(response);
-  };
-
-  useEffect(() => {
-    fetchClasses();
-  }, []);
+  const [assignStudent, setAssignStudent] = useState<string>("");
+  const queryClient = useQueryClient();
 
   const handleDelete = async (id: string) => {
     await deleteStudent(id);
-    setStudents(students.filter((student) => student.id !== id));
+    queryClient.invalidateQueries({ queryKey: [`students`] });
   };
 
+  const response = useQuery({
+    queryKey: [`students`],
+    queryFn: getStudents,
+  });
+
+  const students: IStudent[] = response.data;
   return (
     <Paper style={styles.students}>
       <Table>
@@ -44,7 +46,7 @@ const Students: React.FC = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {students.map((student) => (
+          {students?.map((student) => (
             <TableRow key={student.id}>
               <TableCell align="center">{student.id}</TableCell>
               <TableCell align="center">{student.firstName}</TableCell>
@@ -52,7 +54,12 @@ const Students: React.FC = () => {
               <TableCell align="center">{student.age}</TableCell>
               <TableCell align="center">{student.profession}</TableCell>
               <TableCell align="center">
-                <Button variant="outlined">Assign to class</Button>
+                <Button
+                  variant="outlined"
+                  onClick={() => setAssignStudent(student.id)}
+                >
+                  Assign to class
+                </Button>
               </TableCell>
               <TableCell align="center">
                 <Button
@@ -66,6 +73,9 @@ const Students: React.FC = () => {
           ))}
         </TableBody>
       </Table>
+      <Dialog open={assignStudent ? true : false} onClose={() => setAssignStudent("")} >
+        <ClassesDialog studentId={assignStudent} />
+      </Dialog>
     </Paper>
   );
 };

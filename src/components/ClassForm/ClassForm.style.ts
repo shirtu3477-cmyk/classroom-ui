@@ -3,13 +3,13 @@ import { createStyles } from "../../styles/create-styles";
 export const useStyles = () =>
     createStyles({
         comp: {
-            margin: 150,
+            margin: '10%',
         },
         form: {
             display:'flex',
             flexDirection:'column',
             justifyContent:'space-evenly',
-            height:300,
-            width: 250
+            height: '27vh',
+            width: '100%'
         },
     });

@@ -4,6 +4,7 @@ export enum ColorMode {
 }
 
 export enum Colors {
-    LIGHT= '#eb1d4dff',
-    DARK='#5229e6ff'
+  LIGHT = "#F50057",
+  DARK = "#3F50B5",
 }
+

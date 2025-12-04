@@ -18,18 +18,24 @@ const ClassForm: React.FC = () => {
   };
 
   const classSchema = Yup.object().shape({
-    classId: Yup.string().test((value) =>
-      value ? isClassIdValid(value) : false
-    ),
+    classId: Yup.string()
+      .test((value) => (value ? isClassIdValid(value) : false))
+      .required(),
     name: Yup.string()
       .max(30)
-      .matches(/^[a-zA-Z\u0590-\u05FF\u200f\u200e ']+$/),
+      .matches(
+        /^[a-zA-Z\u0590-\u05FF\u200f\u200e ']+$/,
+        "no special characters allowed"
+      )
+      .required(),
+    maxSeats: Yup.number().integer().positive().required(),
   });
 
   const formik = useFormik({
     initialValues: { classId: "", name: "", maxSeats: 0 },
     validationSchema: classSchema,
-    validateOnChange: true,
+    validateOnChange: false,
+    validateOnBlur: false,
     onSubmit: handleSubmit,
   });
   return (
@@ -40,27 +46,28 @@ const ClassForm: React.FC = () => {
           <TextField
             id="classId"
             label="Class ID"
-            type="string"
-            required
             value={formik.values.classId}
             onChange={formik.handleChange}
+            error={formik.errors.classId ? true : false}
+            helperText={formik.errors.classId}
             color="info"
           />
           <TextField
             id="name"
             label="Name"
-            required
             value={formik.values.name}
             onChange={formik.handleChange}
+            error={formik.errors.name ? true : false}
+            helperText={formik.errors.name}
             color="info"
           />
           <TextField
             id="maxSeats"
             label="Max Seats"
-            type="number"
-            required
             value={formik.values.maxSeats}
             onChange={formik.handleChange}
+            error={formik.errors.maxSeats ? true : false}
+            helperText={formik.errors.maxSeats}
             color="info"
           />
           <Button type="submit" variant="contained">

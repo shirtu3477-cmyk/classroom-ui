@@ -1,23 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
 import { deleteClass } from "../../api/api";
 import { useStyles } from "./ClassroomCard.style";
 import DeleteIcon from "@mui/icons-material/Delete";
+import StudentsDialog from "../StudentsDialog/StudentsDialog";
 import {
   Button,
   Card,
   CardActions,
   CardContent,
   CardHeader,
+  Dialog,
   IconButton,
   Typography,
 } from "@mui/material";
-import { toast } from "react-toastify";
+import { IStudent } from "../../pages/Students/Students.types";
 
 interface IClassroomCardProps {
   id: number;
   className: string;
   maxSeats: number;
-  takenSeats: number;
+  students: IStudent[];
   updateClassesStore: (id:number) => void
 }
 
@@ -25,11 +28,11 @@ const ClassroomCard: React.FC<IClassroomCardProps> = ({
   id,
   className,
   maxSeats,
-  takenSeats,
+  students,
   updateClassesStore
 }) => {
   const styles = useStyles();
-  ;
+  const [sdialog, setSDialog] = useState<boolean>(false)
   const handleDelete = async (id: number) => {
     const response = await deleteClass(id);
     if(response) {
@@ -39,13 +42,13 @@ const ClassroomCard: React.FC<IClassroomCardProps> = ({
     updateClassesStore(id)
   };
 
-  const showStudentsList = () => {};
   return (
+    <>
     <Card style={styles.card}>
       <CardHeader title={<Typography variant="h4">{className}</Typography>} />
       <CardContent style={styles.content}>
         <Typography variant="subtitle1">{`there are ${
-          maxSeats - takenSeats
+          maxSeats - students.length
         } seats left`}</Typography>
         <Typography
           color="gray"
@@ -53,7 +56,7 @@ const ClassroomCard: React.FC<IClassroomCardProps> = ({
         >{`out of ${maxSeats}`}</Typography>
       </CardContent>
       <CardActions>
-        <Button variant="text" onClick={showStudentsList}>
+        <Button style={styles.btn} variant="text" onClick={() => setSDialog(true)}>
           STUDENTS LIST
         </Button>
         <IconButton onClick={() => handleDelete(id)} color="primary">
@@ -61,6 +64,10 @@ const ClassroomCard: React.FC<IClassroomCardProps> = ({
         </IconButton>
       </CardActions>
     </Card>
+    <Dialog open={sdialog} onClose={() => setSDialog(false)}>
+        <StudentsDialog students={students} />
+    </Dialog>
+    </>
   );
 };
 
