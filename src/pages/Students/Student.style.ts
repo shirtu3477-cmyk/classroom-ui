@@ -3,14 +3,12 @@ import { createStyles } from "../../styles/create-styles";
 export const useStyles = () =>
   createStyles({
     students: {
-      marginTop: 150,
+      marginTop: '14vh',
       marginLeft: "auto",
       marginRight: "auto",
-      width: 1200,
-      fontSize:100
+      width: '80vw',
     },
     header: {
-      height: 80,
+      height: '6.5vh',
     },
-    
   });

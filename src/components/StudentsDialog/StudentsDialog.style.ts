@@ -3,7 +3,6 @@ import { createStyles } from "../../styles/create-styles";
 export const useStyles = () =>
   createStyles({
     students: {
-      padding: '10%',
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
@@ -12,8 +11,9 @@ export const useStyles = () =>
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
+      width: "11vw",
     },
     name: {
-      width: '100%',
+      width: "4vw",
     },
   });

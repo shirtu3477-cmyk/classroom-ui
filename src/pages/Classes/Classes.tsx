@@ -23,9 +23,6 @@ const Classes: React.FC = () => {
           updateClassesStore={updateClassesStore}
           key={clas.classId}
           id={clas.classId}
-          className={clas.name}
-          maxSeats={clas.maxSeats}
-          students={clas.students}
         />
       ))}
     </Box>

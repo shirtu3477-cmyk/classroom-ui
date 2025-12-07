@@ -3,11 +3,11 @@ import { createStyles } from "../../styles/create-styles";
 export const useStyles = () =>
   createStyles({
     menuButton: {
-      height: 90,
+      height: '9vh',
       display: "flex",
       alignItems: "center",
     },
     item: {
-      marginLeft: 20,
+      marginLeft: '1.5%',
     },
   });

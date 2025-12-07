@@ -14,14 +14,21 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { toast } from "react-toastify";
 
 const Students: React.FC = () => {
   const styles = useStyles();
-  const [assignStudent, setAssignStudent] = useState<string>("");
+  const [assignStudent, setAssignStudent] = useState<IStudent | null>(null);
   const queryClient = useQueryClient();
 
   const handleDelete = async (id: string) => {
-    await deleteStudent(id);
+    const response = await deleteStudent(id );
+
+    if(response) {
+      toast.error(response.error)
+      return;
+    }
+
     queryClient.invalidateQueries({ queryKey: [`students`] });
   };
 
@@ -29,6 +36,11 @@ const Students: React.FC = () => {
     queryKey: [`students`],
     queryFn: getStudents,
   });
+
+  const handleClose = () => {
+    setAssignStudent(null);
+    queryClient.invalidateQueries({ queryKey: [`students`] });
+  };
 
   const students: IStudent[] = response.data;
   return (
@@ -56,7 +68,8 @@ const Students: React.FC = () => {
               <TableCell align="center">
                 <Button
                   variant="outlined"
-                  onClick={() => setAssignStudent(student.id)}
+                  disabled={student.classId ? true : false}
+                  onClick={() => setAssignStudent(student)}
                 >
                   Assign to class
                 </Button>
@@ -64,6 +77,7 @@ const Students: React.FC = () => {
               <TableCell align="center">
                 <Button
                   variant="outlined"
+                  disabled={student.classId ? true : false}
                   onClick={() => handleDelete(student.id)}
                 >
                   delete
@@ -73,8 +87,11 @@ const Students: React.FC = () => {
           ))}
         </TableBody>
       </Table>
-      <Dialog open={assignStudent ? true : false} onClose={() => setAssignStudent("")} >
-        <ClassesDialog studentId={assignStudent} />
+      <Dialog
+        open={assignStudent ? true : false}
+        onClose={() => setAssignStudent(null)}
+      >
+        <ClassesDialog student={assignStudent} handleClose={handleClose} />
       </Dialog>
     </Paper>
   );

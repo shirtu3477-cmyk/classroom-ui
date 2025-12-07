@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { deleteClass } from "../../api/api";
 import { useStyles } from "./ClassroomCard.style";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { selectClassById } from "../../redux/slices/classes";
 import StudentsDialog from "../StudentsDialog/StudentsDialog";
+import { useClassesSelector } from "../../redux/selectors/classes";
 import {
   Button,
   Card,
@@ -14,59 +15,83 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import { IStudent } from "../../pages/Students/Students.types";
+import TrashIcon from "../../icons/TrashIcon";
 
 interface IClassroomCardProps {
   id: number;
-  className: string;
-  maxSeats: number;
-  students: IStudent[];
-  updateClassesStore: (id:number) => void
+  updateClassesStore: (id: number) => void;
 }
 
 const ClassroomCard: React.FC<IClassroomCardProps> = ({
   id,
-  className,
-  maxSeats,
-  students,
-  updateClassesStore
+  updateClassesStore,
 }) => {
   const styles = useStyles();
-  const [sdialog, setSDialog] = useState<boolean>(false)
+  const [sdialog, setSDialog] = useState<boolean>(false);
+  const classObj = useClassesSelector((state) => selectClassById(state, id));
+
   const handleDelete = async (id: number) => {
-    const response = await deleteClass(id);
-    if(response) {
-        toast.error(response.error)
+    if (classObj?.students.length !== 0) {
+      toast.error(
+        "class cannot be deleted because students are assigned to it"
+      );
+
+      return;
     }
 
-    updateClassesStore(id)
+    const response = await deleteClass(id);
+
+    if (response) {
+      toast.error(response.error);
+    }
+
+    updateClassesStore(id);
   };
+
+  const handleClose = () => setSDialog(false);
 
   return (
     <>
-    <Card style={styles.card}>
-      <CardHeader title={<Typography variant="h4">{className}</Typography>} />
-      <CardContent style={styles.content}>
-        <Typography variant="subtitle1">{`there are ${
-          maxSeats - students.length
-        } seats left`}</Typography>
-        <Typography
-          color="gray"
-          variant="body2"
-        >{`out of ${maxSeats}`}</Typography>
-      </CardContent>
-      <CardActions>
-        <Button style={styles.btn} variant="text" onClick={() => setSDialog(true)}>
-          STUDENTS LIST
-        </Button>
-        <IconButton onClick={() => handleDelete(id)} color="primary">
-          <DeleteIcon />
-        </IconButton>
-      </CardActions>
-    </Card>
-    <Dialog open={sdialog} onClose={() => setSDialog(false)}>
-        <StudentsDialog students={students} />
-    </Dialog>
+      {classObj && (
+        <>
+          <Card style={styles.card}>
+            <CardHeader
+              title={
+                <Typography style={styles.header} variant="h5">
+                  {classObj.name}
+                </Typography>
+              }
+            />
+            <CardContent style={styles.content}>
+              <Typography variant="subtitle1">
+                there are
+                <span style={styles.seats}>
+                  {classObj.maxSeats - classObj.students.length}
+                </span>
+                seats left
+              </Typography>
+              <Typography style={styles.seatsDeatils} variant="body2">
+                out of <span style={styles.seats}>{classObj.maxSeats}</span>
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button
+                style={styles.btn}
+                variant="text"
+                onClick={() => setSDialog(true)}
+              >
+                STUDENTS LIST
+              </Button>
+              <IconButton onClick={() => handleDelete(id)} color="primary">
+                <TrashIcon />
+              </IconButton>
+            </CardActions>
+          </Card>
+          <Dialog open={sdialog} onClose={handleClose}>
+            <StudentsDialog students={classObj.students} handleClose={handleClose} />
+          </Dialog>
+        </>
+      )}
     </>
   );
 };

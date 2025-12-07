@@ -3,11 +3,10 @@ import { createStyles } from "../../styles/create-styles";
 export const useStyles = () =>
   createStyles({
     classes: {
-      marginTop: 150,
-      marginLeft: 100,
+      marginTop: '14vh',
+      marginLeft: '6vw',
       display: "flex",
-      width: 1800,
-      height: 400,
+      width: '95%',
       flexWrap: "wrap",
     },
   });

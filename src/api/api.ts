@@ -28,7 +28,7 @@ export const createClass = async (data: IClassCreate) => {
   } catch (e) {
     return (
       axios.isAxiosError(e) && {
-        error: e.response?.data.error,
+        error: e.response?.data.message,
         status: e.status,
       }
     );
@@ -41,7 +41,7 @@ export const deleteClass = async (id: number) => {
   } catch (e) {
     return (
       axios.isAxiosError(e) && {
-        error: e.response?.data.error,
+        error: e.response?.data.message,
         status: e.status,
       }
     );
@@ -55,7 +55,7 @@ export const createStudent = async (data: IStudentCreate) => {
   } catch (e) {
     return (
       axios.isAxiosError(e) && {
-        error: e.response?.data.error,
+        error: e.response?.data.message,
         status: e.status,
       }
     );
@@ -77,7 +77,7 @@ export const deleteStudent = async (id: string) => {
   } catch (e) {
     return (
       axios.isAxiosError(e) && {
-        error: e.response?.data.error,
+        error: e.response?.data.message,
         status: e.status,
       }
     );
@@ -91,9 +91,23 @@ export const assignToClass = async (id: string, classId: number) => {
   } catch (e) {
     return (
       axios.isAxiosError(e) && {
-        error: e.response?.data.error,
+        error: e.response?.data.message,
         status: e.status,
       }
     );
   }
 };
+
+export const unAssignClass = async (id: string) => {
+    try {
+    const response = await classroom.patch(`/student/${id}/unassign`);
+    return response.data
+  } catch (e) {
+    return (
+      axios.isAxiosError(e) && {
+        error: e.response?.data.message,
+        status: e.status,
+      }
+    );
+  }
+}

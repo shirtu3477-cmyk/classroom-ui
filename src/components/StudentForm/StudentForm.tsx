@@ -12,8 +12,8 @@ const StudentForm: React.FC = () => {
   const handleSubmit = async (values: IStudentCreate) => {
     const response = await createStudent(values);
 
-    if (response.data) toast.info(`student ${response.data.id} was created`);
-    else toast.error(response.error);
+    if (response.error) toast.error(response.error);
+    else toast.info(`student ${response.id} was created`);
   };
 
   const studentSchema = Yup.object().shape({
@@ -32,7 +32,7 @@ const StudentForm: React.FC = () => {
         /^[a-zA-Z\u0590-\u05FF\u200f\u200e ']+$/,
         "no special characters allowed"
       ),
-    age: Yup.number().integer().positive(),
+    age: Yup.number().integer().positive().nullable(),
     profession: Yup.string().required().max(30),
   });
 
@@ -41,7 +41,7 @@ const StudentForm: React.FC = () => {
       id: "",
       firstName: "",
       lastName: "",
-      age: 0,
+      age: undefined,
       profession: "",
     },
     validationSchema: studentSchema,

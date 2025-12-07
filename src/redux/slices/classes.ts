@@ -15,6 +15,11 @@ const initialState: IClass[] = [];
 export const classesSlice = createSlice({
   name: "classes",
   initialState,
+  selectors: {
+    selectClassById(state, classId) {
+      return state.find((clas) => clas.classId === classId);
+    },
+  },
   reducers: {
     addClass(state, action) {
       state.push(action.payload);
@@ -25,11 +30,35 @@ export const classesSlice = createSlice({
       return state;
     },
 
-    setClasses(state, action) {
+    setClasses(_state, action) {
       return action.payload;
+    },
+
+    addStudent(state, action) {
+      state.forEach((clas) => {
+        if (clas.classId === action.payload.classId) {
+          clas.students.push(action.payload.student);
+        }
+      });
+
+      return state;
+    },
+
+    removeStudent(state, action) {
+      state.forEach((clas) => {
+        if (clas.classId === action.payload.classId) {
+          clas.students = clas.students.filter(
+            (student) => student.id !== action.payload.studentId
+          );
+        }
+      });
+
+      return state;
     },
   },
 });
 
-export const { addClass, removeClass, setClasses } = classesSlice.actions;
+export const { addClass, removeClass, setClasses, addStudent, removeStudent } =
+  classesSlice.actions;
+export const { selectClassById } = classesSlice.selectors;
 export default classesSlice.reducer;

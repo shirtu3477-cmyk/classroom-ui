@@ -7,14 +7,26 @@ import { useStyles } from "./ClassForm.style";
 import { isClassIdValid } from "../../utils/validations";
 import { IClassCreate } from "../../pages/Classes/Classes.types";
 import { Box, TextField, Typography, FormControl, Button } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { addClass } from "../../redux/slices/classes";
 
 const ClassForm: React.FC = () => {
   const styles = useStyles();
+  const dispatch = useDispatch();
+
   const handleSubmit = async (values: IClassCreate) => {
     const response = await createClass(values);
 
-    if (response.data) toast.info(`Class ${response.data.id} was created`);
-    else toast.error(response.error);
+    if (response.error) toast.error(response.error);
+    else {
+      dispatch(
+        addClass({
+          ...response,
+          students: [],
+        })
+      );
+      toast.info(`Class ${response.classId} was created`);
+    }
   };
 
   const classSchema = Yup.object().shape({
@@ -64,7 +76,7 @@ const ClassForm: React.FC = () => {
           <TextField
             id="maxSeats"
             label="Max Seats"
-            value={formik.values.maxSeats}
+            value={+formik.values.maxSeats}
             onChange={formik.handleChange}
             error={formik.errors.maxSeats ? true : false}
             helperText={formik.errors.maxSeats}
