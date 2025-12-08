@@ -1,6 +1,7 @@
-import React, { useState } from "react";
 import { toast } from "react-toastify";
-import { deleteClass } from "../../api/api";
+import React, { useState } from "react";
+import classroomApi from "../../api/api";
+import TrashIcon from "../../icons/TrashIcon";
 import { useStyles } from "./ClassroomCard.style";
 import { selectClassById } from "../../redux/slices/classes";
 import StudentsDialog from "../StudentsDialog/StudentsDialog";
@@ -15,7 +16,6 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import TrashIcon from "../../icons/TrashIcon";
 
 interface IClassroomCardProps {
   id: number;
@@ -39,7 +39,7 @@ const ClassroomCard: React.FC<IClassroomCardProps> = ({
       return;
     }
 
-    const response = await deleteClass(id);
+    const response = await classroomApi.deleteClass(id);
 
     if (response) {
       toast.error(response.error);

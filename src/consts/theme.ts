@@ -3,8 +3,8 @@ export enum ColorMode {
   DARK = "dark",
 }
 
-export enum Colors {
-  LIGHT = "#F50057",
-  DARK = "#3F50B5",
+export const COLORS = {
+  light: "#F50057",
+  dark: "#3F50B5",
 }
 

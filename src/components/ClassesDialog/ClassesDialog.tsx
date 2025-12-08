@@ -1,12 +1,13 @@
 import React from "react";
 import { toast } from "react-toastify";
+import classroomApi from "../../api/api";
 import { useDispatch } from "react-redux";
 import AddIcon from "@mui/icons-material/Add";
-import { assignToClass } from "../../api/api";
 import { useStyles } from "./ClassesDialog.style";
-import SchoolIcon from "@mui/icons-material/School";
-import { addStudent } from "../../redux/slices/classes";
+import GraduateHatIcon from "../../icons/GraduateHatIcon";
+import { IStudent } from "../../pages/Students/Students.types";
 import { useClassesSelector } from "../../redux/selectors/classes";
+import { addStudent, selectVacantClasses } from "../../redux/slices/classes";
 import {
   Box,
   CardHeader,
@@ -15,7 +16,6 @@ import {
   CardContent,
   IconButton,
 } from "@mui/material";
-import { IStudent } from "../../pages/Students/Students.types";
 
 interface IClassDialogProps {
   student: IStudent | null;
@@ -28,14 +28,12 @@ const ClassesDialog: React.FC<IClassDialogProps> = ({
 }) => {
   const styles = useStyles();
   const dispatch = useDispatch();
-  const classes = useClassesSelector((state) => state.classes).filter(
-    (clas) => clas.maxSeats > clas.students.length
-  );
+  const classes = useClassesSelector((state) => selectVacantClasses(state));
 
   const handleAssign = async (classId: number) => {
     if (!student) return;
 
-    const response = await assignToClass(student.id, classId);
+    const response = await classroomApi.assignToClass(student.id, classId);
 
     if (response.error) toast.error(response.error);
     else {
@@ -54,11 +52,18 @@ const ClassesDialog: React.FC<IClassDialogProps> = ({
         <CardContent>
           {classes.map((clas) => (
             <Box key={clas.classId} style={styles.clas}>
-              <SchoolIcon color="disabled" />
+              <GraduateHatIcon />
               <Box>
                 <Typography>{clas.name}</Typography>
               </Box>
-              <IconButton onClick={() => handleAssign(clas.classId)}>
+              <IconButton
+                onClick={() => handleAssign(clas.classId)}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
                 <AddIcon color="primary" />
               </IconButton>
             </Box>

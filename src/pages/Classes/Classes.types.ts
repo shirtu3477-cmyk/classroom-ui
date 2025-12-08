@@ -3,7 +3,7 @@ import { IStudent } from "../Students/Students.types";
 export interface IClassCreate {
   classId: string;
   name: string;
-  maxSeats: number;
+  maxSeats: number | null;
 }
 
 export interface IClass extends IClassCreate {

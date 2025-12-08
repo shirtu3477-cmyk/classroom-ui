@@ -1,9 +1,14 @@
+import { toast } from "react-toastify";
 import React, { useState } from "react";
+import classroomApi from "../../api/api";
 import { useStyles } from "./Student.style";
 import { IStudent } from "./Students.types";
-import { deleteStudent, getStudents } from "../../api/api";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import ClassesDialog from "../../components/ClassesDialog/ClassesDialog";
+import {
+  STUDENTS_DETAILS_COLUMNS,
+  STUDENTS_ACTIONS_COLUMNS,
+} from "../../consts/studentsTable";
 import {
   Button,
   Dialog,
@@ -14,7 +19,6 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { toast } from "react-toastify";
 
 const Students: React.FC = () => {
   const styles = useStyles();
@@ -22,39 +26,38 @@ const Students: React.FC = () => {
   const queryClient = useQueryClient();
 
   const handleDelete = async (id: string) => {
-    const response = await deleteStudent(id );
+    const response = await classroomApi.deleteStudent(id);
 
-    if(response) {
-      toast.error(response.error)
+    if (response) {
+      toast.error(response.error);
       return;
     }
 
-    queryClient.invalidateQueries({ queryKey: [`students`] });
+    queryClient.invalidateQueries({ queryKey: ['students'] });
   };
 
-  const response = useQuery({
-    queryKey: [`students`],
-    queryFn: getStudents,
+  const { data } = useQuery({
+    queryKey: ['students'],
+    queryFn: classroomApi.getStudents,
   });
 
   const handleClose = () => {
     setAssignStudent(null);
-    queryClient.invalidateQueries({ queryKey: [`students`] });
+    queryClient.invalidateQueries({ queryKey: ['students'] });
   };
 
-  const students: IStudent[] = response.data;
+  const students: IStudent[] = data;
+  const fullTable = STUDENTS_DETAILS_COLUMNS.concat(STUDENTS_ACTIONS_COLUMNS);
   return (
     <Paper style={styles.students}>
       <Table>
         <TableHead style={styles.header}>
           <TableRow>
-            <TableCell align="center">ID</TableCell>
-            <TableCell align="center">First Name</TableCell>
-            <TableCell align="center">Last Name</TableCell>
-            <TableCell align="center">Age</TableCell>
-            <TableCell align="center">Profession</TableCell>
-            <TableCell align="center">Assign</TableCell>
-            <TableCell align="center">Delete</TableCell>
+            {fullTable.map((column) => (
+              <TableCell key={column.key} align="center">
+                {column.title}
+              </TableCell>
+            ))}
           </TableRow>
         </TableHead>
         <TableBody>

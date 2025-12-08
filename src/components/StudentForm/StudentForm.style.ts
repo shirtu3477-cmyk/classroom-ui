@@ -2,7 +2,7 @@ import { createStyles } from "../../styles/create-styles";
 
 export const useStyles = () =>
   createStyles({
-    comp: {
+    formBox: {
       margin: "10%",
     },
     form: {

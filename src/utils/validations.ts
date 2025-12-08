@@ -1,3 +1,7 @@
+import * as Yup from "yup";
+import { FormikErrors } from "formik";
+import { formErrors } from "../consts/formErrors";
+
 export const isValidILId = (testId: string) => {
   const id = String(testId).trim();
 
@@ -23,4 +27,56 @@ export const isClassIdValid = (classId: string) => {
   const first = classId.charAt(0);
 
   return first ? parseInt(first) != 0 : false;
+};
+
+export const studentSchema = Yup.object().shape({
+  id: Yup.string()
+    .test((value) => (value ? isValidILId(value) : false))
+    .required(),
+  firstName: Yup.string()
+    .required()
+    .matches(
+      /^[a-zA-Z\u0590-\u05FF\u200f\u200e ']+$/,
+      formErrors.SPECIAL_CHARS
+    ),
+  lastName: Yup.string()
+    .required()
+    .matches(
+      /^[a-zA-Z\u0590-\u05FF\u200f\u200e ']+$/,
+      formErrors.SPECIAL_CHARS
+    ),
+  age: Yup.number().integer().positive().nullable(),
+  profession: Yup.string().required().max(30),
+});
+
+export const classSchema = Yup.object().shape({
+  classId: Yup.string()
+    .test((value) => (value ? isClassIdValid(value) : false))
+    .required(),
+  name: Yup.string()
+    .max(30)
+    .matches(/^[a-zA-Z\u0590-\u05FF\u200f\u200e ']+$/, formErrors.SPECIAL_CHARS)
+    .required(),
+  maxSeats: Yup.number().integer().positive().required(),
+});
+
+export const validationCombinedLength = (values: {
+  firstName: string;
+  lastName: string;
+}) => {
+  const errors: FormikErrors<{
+    id: string;
+    firstName: string;
+    lastName: string;
+    age: number;
+    profession: string;
+  }> = {};
+  const combinedLength = values.firstName.length + values.lastName.length;
+
+  if (combinedLength > 30) {
+    errors.firstName = formErrors.MAX_LENGTH_30;
+    errors.lastName = formErrors.MAX_LENGTH_30;
+  }
+
+  return errors;
 };

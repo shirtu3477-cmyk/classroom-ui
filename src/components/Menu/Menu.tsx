@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { MenuItem, Box, Drawer } from "@mui/material";
 import { useStyles } from "./Menu.style";
+import { MenuItem, Box, Drawer } from "@mui/material";
 
 interface IMenuProps {
     open: boolean,

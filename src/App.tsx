@@ -1,4 +1,4 @@
-import { getClasses } from "./api/api";
+import classroomApi from "./api/api";
 import { useDispatch } from "react-redux";
 import Create from "./pages/Create/Create";
 import { createTheme } from "@mui/material";
@@ -6,7 +6,7 @@ import Classes from "./pages/Classes/Classes";
 import Navbar from "./components/Navbar/Navbar";
 import { ToastContainer } from 'react-toastify';
 import Students from "./pages/Students/Students";
-import { ColorMode, Colors } from "./styles/theme";
+import { ColorMode, COLORS } from "./consts/theme";
 import { setClasses } from "./redux/slices/classes";
 import { PaletteMode, ThemeProvider } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
@@ -30,7 +30,7 @@ const App: React.FC = () => {
       createTheme({
         palette: {
           primary: {
-            main: mode === ColorMode.LIGHT ? Colors.LIGHT : Colors.DARK,
+            main: mode === ColorMode.LIGHT ? COLORS.light : COLORS.dark,
           },
         },
       }),
@@ -40,7 +40,7 @@ const App: React.FC = () => {
   const dispatch = useDispatch()
 
   const fetchClasses = async () => {
-    const classes = await getClasses();
+    const classes = await classroomApi.getClasses();
     dispatch(setClasses(classes));
   };
 

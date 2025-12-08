@@ -2,7 +2,7 @@ export interface IStudentCreate {
   id: string ;
   firstName: string;
   lastName: string;
-  age: number | undefined;
+  age: number | null;
   profession: string;
 }
 

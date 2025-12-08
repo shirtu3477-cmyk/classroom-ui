@@ -12,8 +12,7 @@ const Classes: React.FC = () => {
   const dispatch = useDispatch();
 
   const updateClassesStore = (id: number) => {
-    const classesUpdated = classes.filter((clas) => clas.classId !== id);
-    dispatch(setClasses(classesUpdated));
+    dispatch(setClasses(classes.filter((clas) => clas.classId !== id)));
   };
 
   return (

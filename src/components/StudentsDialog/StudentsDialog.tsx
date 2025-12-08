@@ -1,12 +1,12 @@
 import React from "react";
 import { toast } from "react-toastify";
+import classroomApi from "../../api/api";
 import { useDispatch } from "react-redux";
-import { unAssignClass } from "../../api/api";
 import TrashIcon from "../../icons/TrashIcon";
+import PersonIcon from "../../icons/PersonIcon";
 import { useStyles } from "./StudentsDialog.style";
 import { removeStudent } from "../../redux/slices/classes";
 import { IStudent } from "../../pages/Students/Students.types";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import {
   Box,
   Card,
@@ -29,12 +29,12 @@ const StudentsDialog: React.FC<IStudentDialogProps> = ({
   const dispatch = useDispatch();
 
   const handleDelete = async (studentId: string, classId: number) => {
-    const response = await unAssignClass(studentId);
+    const response = await classroomApi.unAssignClass(studentId);
 
     if (response.error) toast.error(response.error);
     else toast.info(`student ${response.id} was deleted from class ${classId}`);
 
-    dispatch(removeStudent({studentId, classId}))
+    dispatch(removeStudent({ studentId, classId }));
     handleClose();
   };
 
@@ -44,8 +44,8 @@ const StudentsDialog: React.FC<IStudentDialogProps> = ({
       <CardContent>
         {students.map((student) => (
           <Box key={student.id} style={styles.student}>
-            <AccountCircleIcon fontSize="large" color="disabled" />
-            <Box style={styles.name}>
+            <PersonIcon />
+            <Box>
               <Typography>{`${student.firstName} ${student.lastName}`}</Typography>
             </Box>
             <IconButton

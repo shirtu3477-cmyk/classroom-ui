@@ -1,21 +1,20 @@
 import React from "react";
-import * as Yup from "yup";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { createClass } from "../../api/api";
+import classroomApi from "../../api/api";
+import { useDispatch } from "react-redux";
 import { useStyles } from "./ClassForm.style";
-import { isClassIdValid } from "../../utils/validations";
+import { addClass } from "../../redux/slices/classes";
+import { classSchema } from "../../utils/validations";
 import { IClassCreate } from "../../pages/Classes/Classes.types";
 import { Box, TextField, Typography, FormControl, Button } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { addClass } from "../../redux/slices/classes";
 
 const ClassForm: React.FC = () => {
   const styles = useStyles();
   const dispatch = useDispatch();
 
   const handleSubmit = async (values: IClassCreate) => {
-    const response = await createClass(values);
+    const response = await classroomApi.createClass(values);
 
     if (response.error) toast.error(response.error);
     else {
@@ -29,35 +28,21 @@ const ClassForm: React.FC = () => {
     }
   };
 
-  const classSchema = Yup.object().shape({
-    classId: Yup.string()
-      .test((value) => (value ? isClassIdValid(value) : false))
-      .required(),
-    name: Yup.string()
-      .max(30)
-      .matches(
-        /^[a-zA-Z\u0590-\u05FF\u200f\u200e ']+$/,
-        "no special characters allowed"
-      )
-      .required(),
-    maxSeats: Yup.number().integer().positive().required(),
-  });
-
   const formik = useFormik({
-    initialValues: { classId: "", name: "", maxSeats: 0 },
+    initialValues: { classId: "", name: "", maxSeats: null },
     validationSchema: classSchema,
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: handleSubmit,
   });
   return (
-    <Box style={styles.comp}>
+    <Box style={styles.formBox}>
       <Typography variant="h5">Create new class</Typography>
       <form onSubmit={formik.handleSubmit}>
         <FormControl style={styles.form}>
           <TextField
             id="classId"
-            label="Class ID"
+            label="Class ID *"
             value={formik.values.classId}
             onChange={formik.handleChange}
             error={formik.errors.classId ? true : false}
@@ -66,7 +51,7 @@ const ClassForm: React.FC = () => {
           />
           <TextField
             id="name"
-            label="Name"
+            label="Name *"
             value={formik.values.name}
             onChange={formik.handleChange}
             error={formik.errors.name ? true : false}
@@ -75,8 +60,8 @@ const ClassForm: React.FC = () => {
           />
           <TextField
             id="maxSeats"
-            label="Max Seats"
-            value={+formik.values.maxSeats}
+            label="Max Seats *"
+            value={formik.values.maxSeats}
             onChange={formik.handleChange}
             error={formik.errors.maxSeats ? true : false}
             helperText={formik.errors.maxSeats}

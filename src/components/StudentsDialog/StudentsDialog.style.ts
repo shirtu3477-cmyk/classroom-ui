@@ -12,8 +12,5 @@ export const useStyles = () =>
       justifyContent: "space-between",
       alignItems: "center",
       width: "11vw",
-    },
-    name: {
-      width: "4vw",
-    },
+    }
   });
