@@ -4,10 +4,10 @@ import classroomApi from "../../api/api";
 import { useDispatch } from "react-redux";
 import AddIcon from "@mui/icons-material/Add";
 import { useStyles } from "./ClassesDialog.style";
+import { addStudent } from "../../redux/slices/classes";
 import GraduateHatIcon from "../../icons/GraduateHatIcon";
 import { IStudent } from "../../pages/Students/Students.types";
-import { useClassesSelector } from "../../redux/selectors/classes";
-import { addStudent, selectVacantClasses } from "../../redux/slices/classes";
+import { selectOpenClasses, useClassesSelector } from "../../redux/selectors/classes";
 import {
   Box,
   CardHeader,
@@ -28,7 +28,7 @@ const ClassesDialog: React.FC<IClassDialogProps> = ({
 }) => {
   const styles = useStyles();
   const dispatch = useDispatch();
-  const classes = useClassesSelector((state) => selectVacantClasses(state));
+  const classes = useClassesSelector(state => selectOpenClasses(state))
 
   const handleAssign = async (classId: number) => {
     if (!student) return;

@@ -17,9 +17,6 @@ export const classesSlice = createSlice({
     selectClassById(state, classId) {
       return state.find((clas) => clas.classId === classId);
     },
-    selectVacantClasses(state){
-      return state.filter(clas=> clas.maxSeats > clas.students.length)
-    }
   },
   reducers: {
     addClass(state, action) {
@@ -61,5 +58,5 @@ export const classesSlice = createSlice({
 
 export const { addClass, removeClass, setClasses, addStudent, removeStudent } =
   classesSlice.actions;
-export const { selectClassById, selectVacantClasses } = classesSlice.selectors;
+export const { selectClassById } = classesSlice.selectors;
 export default classesSlice.reducer;
