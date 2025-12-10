@@ -1,15 +1,20 @@
 import { createStyles } from "../../styles/create-styles";
 
 export const useStyles = () =>
-    createStyles({
-        formBox: {
-            margin: '10%',
-        },
-        form: {
-            display:'flex',
-            flexDirection:'column',
-            justifyContent:'space-evenly',
-            height: '27vh',
-            width: '100%'
-        },
-    });
+  createStyles({
+    formBox: {
+      margin: "10%",
+    },
+    form: {
+      width: "100%",
+    },
+    inputs: {
+      marginTop: 8,
+      marginBottom: 8,
+      marginLeft: 12,
+      marginRight: 12,
+    },
+    submit: {
+      marginTop: 8,
+    },
+  });

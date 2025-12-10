@@ -6,10 +6,15 @@ export const useStyles = () =>
       margin: "10%",
     },
     form: {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "space-evenly",
-      height: '40vh',
-      width: '100%',
+      width: "100%",
     },
+    inputs: {
+      marginTop: 8,
+      marginBottom: 8,
+      marginLeft: 12,
+      marginRight: 12,
+    },
+    submit: {
+      marginTop: 8
+    }
   });

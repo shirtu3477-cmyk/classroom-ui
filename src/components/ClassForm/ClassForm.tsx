@@ -37,10 +37,11 @@ const ClassForm: React.FC = () => {
   });
   return (
     <Box style={styles.formBox}>
-      <Typography variant="h5">Create new class</Typography>
+      <Typography variant="h4">Create new class</Typography>
       <form onSubmit={formik.handleSubmit}>
         <FormControl style={styles.form}>
           <TextField
+            style={styles.inputs}
             id="classId"
             label="Class ID *"
             value={formik.values.classId}
@@ -50,6 +51,7 @@ const ClassForm: React.FC = () => {
             color="info"
           />
           <TextField
+            style={styles.inputs}
             id="name"
             label="Name *"
             value={formik.values.name}
@@ -59,6 +61,7 @@ const ClassForm: React.FC = () => {
             color="info"
           />
           <TextField
+            style={styles.inputs}
             id="maxSeats"
             label="Max Seats *"
             value={formik.values.maxSeats}
@@ -67,7 +70,7 @@ const ClassForm: React.FC = () => {
             helperText={formik.errors.maxSeats}
             color="info"
           />
-          <Button type="submit" variant="contained">
+          <Button type="submit" variant="contained" style={styles.submit}>
             create class
           </Button>
         </FormControl>
