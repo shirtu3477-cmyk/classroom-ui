@@ -10,6 +10,8 @@ RUN npm i -g serve
 
 COPY . .
 
+ENV VITE_SERVER_URL=httpS://smartbase-handover.dev.digital.idf.il
+
 RUN npm run build
 
 EXPOSE 3000
