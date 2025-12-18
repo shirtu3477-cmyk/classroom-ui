@@ -10,7 +10,8 @@ RUN npm i -g serve
 
 COPY . .
 
-ENV VITE_SERVER_URL=httpS://smartbase-handover.dev.digital.idf.il
+ARG VITE_SERVER_URL
+ENV VITE_SERVER_URL=$SERVER_URL
 
 RUN npm run build
 
