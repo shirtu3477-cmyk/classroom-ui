@@ -8,7 +8,7 @@ class ClassroomApi {
   constructor() {
     this.api = axios.create({
       // baseURL: import.meta.env.VITE_SERVER_URL,
-      baseURL: 'https://smartbase-handover.dev.digital.idf.il/api'
+      baseURL: 'https://smartbase-handover.dev.digital.idf.il/api',
       timeout: 10000,
       headers: {
         "Content-Type": "application/json",
