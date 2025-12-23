@@ -49,7 +49,7 @@ const App: React.FC = () => {
   useEffect(() => {
     fetchClasses();
   }, []);
-
+  console.log(import.meta.env.VITE_SERVER_URL)
   return (
     <HashRouter>
       <ThemeProvider theme={theme}>
