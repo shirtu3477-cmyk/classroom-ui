@@ -3,7 +3,6 @@ FROM node:24.11.1-alpine3.22
 WORKDIR /app
 
 ARG VITE_SERVER_URL
-ENV VITE_SERVER_URL=$SERVER_URL
 
 COPY package.json .
 
