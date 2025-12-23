@@ -8,6 +8,7 @@ class ClassroomApi {
   constructor() {
     this.api = axios.create({
       baseURL: import.meta.env.VITE_SERVER_URL,
+      timeout: 10000,
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -31,7 +32,7 @@ class ClassroomApi {
     } catch (e) {
       return (
         axios.isAxiosError(e) && {
-          error: e.response?.data.message,
+          error: e.message,
           status: e.status,
         }
       );
@@ -44,7 +45,7 @@ class ClassroomApi {
     } catch (e) {
       return (
         axios.isAxiosError(e) && {
-          error: e.response?.data.message,
+          error: e.message,
           status: e.status,
         }
       );
@@ -58,7 +59,7 @@ class ClassroomApi {
     } catch (e) {
       return (
         axios.isAxiosError(e) && {
-          error: e.response?.data.message,
+          error: e.message,
           status: e.status,
         }
       );
@@ -80,7 +81,7 @@ class ClassroomApi {
     } catch (e) {
       return (
         axios.isAxiosError(e) && {
-          error: e.response?.data.message,
+          error: e.message,
           status: e.status,
         }
       );
@@ -96,7 +97,7 @@ class ClassroomApi {
     } catch (e) {
       return (
         axios.isAxiosError(e) && {
-          error: e.response?.data.message,
+          error: e.message,
           status: e.status,
         }
       );
@@ -110,7 +111,7 @@ class ClassroomApi {
     } catch (e) {
       return (
         axios.isAxiosError(e) && {
-          error: e.response?.data.message,
+          error: e.message,
           status: e.status,
         }
       );

@@ -61,7 +61,7 @@ const Students: React.FC = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {students?.map((student) => (
+          {students?.length && students?.map((student) => (
             <TableRow key={student.id}>
               <TableCell align="center">{student.id}</TableCell>
               <TableCell align="center">{student.firstName}</TableCell>

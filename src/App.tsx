@@ -4,7 +4,7 @@ import Create from "./pages/Create/Create";
 import { createTheme } from "@mui/material";
 import Classes from "./pages/Classes/Classes";
 import Navbar from "./components/Navbar/Navbar";
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from "react-toastify";
 import Students from "./pages/Students/Students";
 import { ColorMode, COLORS } from "./consts/theme";
 import { setClasses } from "./redux/slices/classes";
@@ -37,11 +37,13 @@ const App: React.FC = () => {
     [mode]
   );
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const fetchClasses = async () => {
     const classes = await classroomApi.getClasses();
-    dispatch(setClasses(classes));
+
+    if (classes.error) toast.error('classroom server is offline :(') 
+    else dispatch(setClasses(classes));
   };
 
   useEffect(() => {
@@ -64,4 +66,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-

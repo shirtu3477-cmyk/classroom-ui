@@ -17,13 +17,17 @@ const Classes: React.FC = () => {
 
   return (
     <Box style={styles.classes}>
-      {classes?.map((clas: IClass) => (
-        <ClassroomCard
-          updateClassesStore={updateClassesStore}
-          key={clas.classId}
-          id={clas.classId}
-        />
-      ))}
+      {classes.length ? (
+        classes.map((clas: IClass) => (
+          <ClassroomCard
+            updateClassesStore={updateClassesStore}
+            key={clas.classId}
+            id={clas.classId}
+          />
+        ))
+      ) : (
+        <></>
+      )}
     </Box>
   );
 };
