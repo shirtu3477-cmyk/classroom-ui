@@ -47,6 +47,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           build-args: |
-            SERVER_URL=${{ vars.SERVER_URL }}
+            VITE_SERVER_URL=${{ vars.SERVER_URL }}
           labels: ${{ steps.meta.outputs.labels }}
       
