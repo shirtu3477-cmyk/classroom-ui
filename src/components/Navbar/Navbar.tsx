@@ -15,7 +15,7 @@ const Navbar: React.FC<INavbarProps> = ({colorMode}) => {
  
   return (
     <Box>
-      <AppBar>
+      <AppBar position="static">
         <Toolbar>
           <IconButton
             color="inherit"

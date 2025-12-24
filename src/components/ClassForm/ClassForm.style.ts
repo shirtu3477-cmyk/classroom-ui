@@ -4,6 +4,7 @@ export const useStyles = () =>
   createStyles({
     formBox: {
       margin: "10%",
+      marginTop: "5%",
     },
     form: {
       width: "100%",
