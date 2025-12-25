@@ -35,6 +35,7 @@ const ClassForm: React.FC = () => {
     validateOnBlur: false,
     onSubmit: handleSubmit,
   });
+  
   return (
     <Box style={styles.formBox}>
       <Typography style={styles.title} variant="h4">Create new class</Typography>

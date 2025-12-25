@@ -34,9 +34,12 @@ const StudentForm: React.FC = () => {
     onSubmit: handleSubmit,
   });
   const styles = useStyles();
+  
   return (
     <Box style={styles.formBox}>
-      <Typography style={styles.title} variant="h4">Add new student</Typography>
+      <Typography style={styles.title} variant="h4">
+        Add new student
+      </Typography>
       <form onSubmit={formik.handleSubmit}>
         <FormControl style={styles.form}>
           <TextField
@@ -47,7 +50,7 @@ const StudentForm: React.FC = () => {
             onChange={formik.handleChange}
             error={formik.errors.id ? true : false}
             helperText={formik.errors.id && formErrors.VALID_ID}
-             color="info"
+            color="info"
           />
           <TextField
             style={styles.inputs}

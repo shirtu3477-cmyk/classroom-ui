@@ -1,13 +1,14 @@
 import { toast } from "react-toastify";
-import React, { useState } from "react";
 import classroomApi from "../../api/api";
 import { useStyles } from "./Student.style";
 import { IStudent } from "./Students.types";
+import React, { useCallback, useState } from "react";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import ClassesDialog from "../../components/ClassesDialog/ClassesDialog";
 import {
-  STUDENTS_DETAILS_COLUMNS,
-  STUDENTS_ACTIONS_COLUMNS,
+  IStudenActionColumn,
+  IStudentDataColumn,
+  studentTableData,
 } from "../../consts/studentsTable";
 import {
   Button,
@@ -33,27 +34,67 @@ const Students: React.FC = () => {
       return;
     }
 
-    queryClient.invalidateQueries({ queryKey: ['students'] });
+    queryClient.invalidateQueries({ queryKey: ["students"] });
   };
 
   const { data } = useQuery({
-    queryKey: ['students'],
+    queryKey: ["students"],
     queryFn: classroomApi.getStudents,
   });
 
   const handleClose = () => {
     setAssignStudent(null);
-    queryClient.invalidateQueries({ queryKey: ['students'] });
+    queryClient.invalidateQueries({ queryKey: ["students"] });
   };
 
   const students: IStudent[] = data;
-  const fullTable = STUDENTS_DETAILS_COLUMNS.concat(STUDENTS_ACTIONS_COLUMNS);
+
+  const assignCellRender = useCallback((row: IStudent) => (
+    <TableCell key={`${row.id}-assign`} align="center">
+      <Button
+        variant="outlined"
+        disabled={row.classId ? true : false}
+        onClick={() => setAssignStudent(row)}
+      >
+        Assign to class
+      </Button>
+    </TableCell>
+  ), []);
+
+  const deleteCellRender = useCallback((row: IStudent) => (
+    <TableCell key={`${row.id}-delete`} align="center">
+      <Button
+        variant="outlined"
+        disabled={row.classId ? true : false}
+        onClick={() => handleDelete(row.id)}
+      >
+        delete
+      </Button>
+    </TableCell>
+  ), []);
+
+  const studentTable: (IStudentDataColumn | IStudenActionColumn)[] = [
+    ...studentTableData,
+    {
+      kind: "action",
+      title: "Assign",
+      key: "assign",
+      cellRender: assignCellRender,
+    },
+    {
+      kind: "action",
+      title: "Delete",
+      key: "delete",
+      cellRender: deleteCellRender,
+    },
+  ];
+
   return (
     <Paper style={styles.students}>
       <Table>
         <TableHead style={styles.header}>
           <TableRow>
-            {fullTable.map((column) => (
+            {studentTable.map((column) => (
               <TableCell key={column.key} align="center">
                 {column.title}
               </TableCell>
@@ -61,33 +102,23 @@ const Students: React.FC = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {students?.length && students?.map((student) => (
-            <TableRow key={student.id}>
-              <TableCell align="center">{student.id}</TableCell>
-              <TableCell align="center">{student.firstName}</TableCell>
-              <TableCell align="center">{student.lastName}</TableCell>
-              <TableCell align="center">{student.age}</TableCell>
-              <TableCell align="center">{student.profession}</TableCell>
-              <TableCell align="center">
-                <Button
-                  variant="outlined"
-                  disabled={student.classId ? true : false}
-                  onClick={() => setAssignStudent(student)}
-                >
-                  Assign to class
-                </Button>
-              </TableCell>
-              <TableCell align="center">
-                <Button
-                  variant="outlined"
-                  disabled={student.classId ? true : false}
-                  onClick={() => handleDelete(student.id)}
-                >
-                  delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
+          {students?.length &&
+            students?.map((student) => (
+              <TableRow key={student.id}>
+                {studentTable.map((column) =>
+                  column.kind === "data" ? (
+                    <TableCell
+                      key={`${student.id}-${column.key}`}
+                      align="center"
+                    >
+                      {student[column.key]}
+                    </TableCell>
+                  ) : (
+                    column.cellRender(student)
+                  )
+                )}
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
       <Dialog
