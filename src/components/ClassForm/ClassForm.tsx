@@ -37,7 +37,7 @@ const ClassForm: React.FC = () => {
   });
   return (
     <Box style={styles.formBox}>
-      <Typography variant="h4">Create new class</Typography>
+      <Typography style={styles.title} variant="h4">Create new class</Typography>
       <form onSubmit={formik.handleSubmit}>
         <FormControl style={styles.form}>
           <TextField

@@ -36,7 +36,7 @@ const StudentForm: React.FC = () => {
   const styles = useStyles();
   return (
     <Box style={styles.formBox}>
-      <Typography variant="h4">Add new student</Typography>
+      <Typography style={styles.title} variant="h4">Add new student</Typography>
       <form onSubmit={formik.handleSubmit}>
         <FormControl style={styles.form}>
           <TextField
