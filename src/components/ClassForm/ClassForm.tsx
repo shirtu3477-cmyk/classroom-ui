@@ -6,9 +6,9 @@ import { useDispatch } from "react-redux";
 import { useStyles } from "./ClassForm.style";
 import { addClass } from "../../redux/slices/classes";
 import { classSchema } from "../../utils/validations";
-import { IClassCreate } from "../../pages/Classes/Classes.types";
-import { fields, IClassFormvalues } from "../../consts/classFormFields";
+import { fields } from "../../consts/classFormFields";
 import { Box, TextField, Typography, FormControl, Button } from "@mui/material";
+import { IClassCreate, IClassFormvalues } from "../../pages/Classes/Classes.types";
 
 const ClassForm: React.FC = () => {
   const styles = useStyles();

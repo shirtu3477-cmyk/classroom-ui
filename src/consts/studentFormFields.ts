@@ -1,17 +1,4 @@
-export interface IStudentFormvalues {
-  id: string;
-  firstName: string;
-  lastName: string;
-  age: number | null;
-  profession: string;
-}
-
-type FormKeys = keyof IStudentFormvalues;
-
-export interface IStudentFieldKeys {
-  id: FormKeys;
-  label: string;
-}
+import { IStudentFieldKeys } from "../pages/Students/Students.types";
 
 export const fields: IStudentFieldKeys[] = [
   { id: "id", label: "ID *" },

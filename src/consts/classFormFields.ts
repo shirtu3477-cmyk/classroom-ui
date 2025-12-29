@@ -1,15 +1,4 @@
-export interface IClassFormvalues {
-  classId: string;
-  name: string;
-  maxSeats: number | null;
-}
-
-type FormKeys = keyof IClassFormvalues;
-
-export interface IClassFieldKeys {
-  id: FormKeys;
-  label: string;
-}
+import { IClassFieldKeys } from "../pages/Classes/Classes.types";
 
 export const fields: IClassFieldKeys[] = [
   { id: "classId", label: "Class ID *" },

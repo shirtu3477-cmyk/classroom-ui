@@ -1,15 +1,15 @@
 import { toast } from "react-toastify";
 import classroomApi from "../../api/api";
 import { useStyles } from "./Student.style";
-import { IStudent } from "./Students.types";
 import React, { useCallback, useState } from "react";
+import { studentTableData } from "../../consts/studentsTable";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import ClassesDialog from "../../components/ClassesDialog/ClassesDialog";
 import {
   IStudenActionColumn,
+  IStudent,
   IStudentDataColumn,
-  studentTableData,
-} from "../../consts/studentsTable";
+} from "./Students.types";
 import {
   Button,
   Dialog,
@@ -49,29 +49,35 @@ const Students: React.FC = () => {
 
   const students: IStudent[] = data;
 
-  const assignCellRender = useCallback((row: IStudent) => (
-    <TableCell key={`${row.id}-assign`} align="center">
-      <Button
-        variant="outlined"
-        disabled={row.classId ? true : false}
-        onClick={() => setAssignStudent(row)}
-      >
-        Assign to class
-      </Button>
-    </TableCell>
-  ), []);
+  const assignCellRender = useCallback(
+    (row: IStudent) => (
+      <TableCell key={`${row.id}-assign`} align="center">
+        <Button
+          variant="outlined"
+          disabled={row.classId ? true : false}
+          onClick={() => setAssignStudent(row)}
+        >
+          Assign to class
+        </Button>
+      </TableCell>
+    ),
+    []
+  );
 
-  const deleteCellRender = useCallback((row: IStudent) => (
-    <TableCell key={`${row.id}-delete`} align="center">
-      <Button
-        variant="outlined"
-        disabled={row.classId ? true : false}
-        onClick={() => handleDelete(row.id)}
-      >
-        delete
-      </Button>
-    </TableCell>
-  ), []);
+  const deleteCellRender = useCallback(
+    (row: IStudent) => (
+      <TableCell key={`${row.id}-delete`} align="center">
+        <Button
+          variant="outlined"
+          disabled={row.classId ? true : false}
+          onClick={() => handleDelete(row.id)}
+        >
+          delete
+        </Button>
+      </TableCell>
+    ),
+    []
+  );
 
   const studentTable: (IStudentDataColumn | IStudenActionColumn)[] = [
     ...studentTableData,

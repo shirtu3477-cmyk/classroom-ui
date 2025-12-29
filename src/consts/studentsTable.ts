@@ -1,18 +1,4 @@
-import { IStudent } from "../pages/Students/Students.types";
-
-export interface IStudentDataColumn {
-  kind: "data";
-  key: keyof IStudent;
-  title: string;
-}
-
-export interface IStudenActionColumn {
-  kind: "action";
-
-  key: string;
-  title: string;
-  cellRender: (row: IStudent) => React.ReactElement;
-}
+import { IStudentDataColumn } from "../pages/Students/Students.types";
 
 export const studentTableData: IStudentDataColumn[] = [
   {

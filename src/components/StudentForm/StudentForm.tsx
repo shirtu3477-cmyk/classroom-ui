@@ -3,13 +3,16 @@ import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import classroomApi from "../../api/api";
 import { useStyles } from "./StudentForm.style";
-import { IStudentCreate } from "../../pages/Students/Students.types";
-import { fields, IStudentFormvalues } from "../../consts/studentFormFields";
+import { fields } from "../../consts/studentFormFields";
 import { Box, TextField, Typography, FormControl, Button } from "@mui/material";
 import {
   studentSchema,
   validationCombinedLength,
 } from "../../utils/validations";
+import {
+  IStudentCreate,
+  IStudentFormvalues,
+} from "../../pages/Students/Students.types";
 
 const StudentForm: React.FC = () => {
   const handleSubmit = async (values: IStudentCreate) => {

@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 import { FormikErrors } from "formik";
 import { formErrors } from "../consts/formErrors";
-import { IStudentFormvalues } from "../consts/studentFormFields";
+import { IStudentFormvalues } from "../pages/Students/Students.types";
 
 export const isValidILId = (testId: string) => {
   const id = String(testId).trim();
