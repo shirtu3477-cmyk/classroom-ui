@@ -7,6 +7,7 @@ import { useStyles } from "./ClassForm.style";
 import { addClass } from "../../redux/slices/classes";
 import { classSchema } from "../../utils/validations";
 import { IClassCreate } from "../../pages/Classes/Classes.types";
+import { fields, IClassFormvalues } from "../../consts/classFormFields";
 import { Box, TextField, Typography, FormControl, Button } from "@mui/material";
 
 const ClassForm: React.FC = () => {
@@ -28,49 +29,34 @@ const ClassForm: React.FC = () => {
     }
   };
 
-  const formik = useFormik({
+  const formik = useFormik<IClassFormvalues>({
     initialValues: { classId: "", name: "", maxSeats: null },
     validationSchema: classSchema,
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: handleSubmit,
   });
-  
+
   return (
     <Box style={styles.formBox}>
-      <Typography style={styles.title} variant="h4">Create new class</Typography>
+      <Typography style={styles.title} variant="h4">
+        Create new class
+      </Typography>
       <form onSubmit={formik.handleSubmit}>
         <FormControl style={styles.form}>
-          <TextField
-            style={styles.inputs}
-            id="classId"
-            label="Class ID *"
-            value={formik.values.classId}
-            onChange={formik.handleChange}
-            error={formik.errors.classId ? true : false}
-            helperText={formik.errors.classId}
-            color="info"
-          />
-          <TextField
-            style={styles.inputs}
-            id="name"
-            label="Name *"
-            value={formik.values.name}
-            onChange={formik.handleChange}
-            error={formik.errors.name ? true : false}
-            helperText={formik.errors.name}
-            color="info"
-          />
-          <TextField
-            style={styles.inputs}
-            id="maxSeats"
-            label="Max Seats *"
-            value={formik.values.maxSeats}
-            onChange={formik.handleChange}
-            error={formik.errors.maxSeats ? true : false}
-            helperText={formik.errors.maxSeats}
-            color="info"
-          />
+          {fields.map((field) => (
+            <TextField
+              key={field.id}
+              style={styles.inputs}
+              id={field.id}
+              label={field.label}
+              value={formik.values[field.id] ?? ""}
+              onChange={formik.handleChange}
+              error={formik.errors[field.id] ? true : false}
+              helperText={formik.errors[field.id]}
+              color="info"
+            />
+          ))}
           <Button type="submit" variant="contained" style={styles.submit}>
             create class
           </Button>

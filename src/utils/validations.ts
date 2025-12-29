@@ -1,6 +1,7 @@
 import * as Yup from "yup";
 import { FormikErrors } from "formik";
 import { formErrors } from "../consts/formErrors";
+import { IStudentFormvalues } from "../consts/studentFormFields";
 
 export const isValidILId = (testId: string) => {
   const id = String(testId).trim();
@@ -64,13 +65,7 @@ export const validationCombinedLength = (values: {
   firstName: string;
   lastName: string;
 }) => {
-  const errors: FormikErrors<{
-    id: string;
-    firstName: string;
-    lastName: string;
-    age: number;
-    profession: string;
-  }> = {};
+  const errors: FormikErrors<IStudentFormvalues> = {};
   const combinedLength = values.firstName.length + values.lastName.length;
 
   if (combinedLength > 30) {

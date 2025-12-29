@@ -3,8 +3,8 @@ import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import classroomApi from "../../api/api";
 import { useStyles } from "./StudentForm.style";
-import { fields, IStudentFormvalues } from "../../consts/studentFormFields";
 import { IStudentCreate } from "../../pages/Students/Students.types";
+import { fields, IStudentFormvalues } from "../../consts/studentFormFields";
 import { Box, TextField, Typography, FormControl, Button } from "@mui/material";
 import {
   studentSchema,
@@ -48,7 +48,7 @@ const StudentForm: React.FC = () => {
               style={styles.inputs}
               id={field.id}
               label={field.label}
-              value={formik.values[field.id]}
+              value={formik.values[field.id] ?? ""}
               onChange={formik.handleChange}
               error={formik.errors[field.id] ? true : false}
               helperText={formik.errors[field.id]}
