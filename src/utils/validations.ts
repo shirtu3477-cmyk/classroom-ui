@@ -31,7 +31,7 @@ export const isClassIdValid = (classId: string) => {
 
 export const studentSchema = Yup.object().shape({
   id: Yup.string()
-    .test((value) => (value ? isValidILId(value) : false))
+    .test('is-valid-il-id', formErrors.VALID_ID, (value) => (value ? isValidILId(value) : false))
     .required(),
   firstName: Yup.string()
     .required()
