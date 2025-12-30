@@ -3,7 +3,7 @@ import { FormikErrors } from "formik";
 import { formErrors } from "../consts/formErrors";
 import { IStudentFormvalues } from "../pages/Students/Students.types";
 
-export const isValidILId = (testId: string) => {
+const isValidILId = (testId: string) => {
   const id = String(testId).trim();
 
   if (id.length > 9 || id.length < 5 || isNaN(parseInt(id))) return false;
@@ -20,7 +20,7 @@ export const isValidILId = (testId: string) => {
   );
 };
 
-export const isClassIdValid = (classId: string) => {
+const isClassIdValid = (classId: string) => {
   const intId = parseInt(classId);
 
   if (intId < 0 || isNaN(intId)) return false;
@@ -30,9 +30,16 @@ export const isClassIdValid = (classId: string) => {
   return first ? parseInt(first) != 0 : false;
 };
 
+const hasLeadingZero = (
+  value: number | null | undefined,
+  context: Yup.TestContext<Yup.AnyObject>
+) => value ? !context.originalValue.startsWith("0") : true;
+
 export const studentSchema = Yup.object().shape({
   id: Yup.string()
-    .test('is-valid-il-id', formErrors.VALID_ID, (value) => (value ? isValidILId(value) : false))
+    .test("is-valid-il-id", formErrors.VALID_ID, (value) =>
+      value ? isValidILId(value) : false
+    )
     .required(),
   firstName: Yup.string()
     .required()
@@ -46,7 +53,11 @@ export const studentSchema = Yup.object().shape({
       /^[a-zA-Z\u0590-\u05FF\u200f\u200e ']+$/,
       formErrors.SPECIAL_CHARS
     ),
-  age: Yup.number().integer().positive().nullable(),
+  age: Yup.number()
+    .integer()
+    .positive()
+    .nullable()
+    .test("leading-zero", formErrors.LEADING_ZERO, hasLeadingZero),
   profession: Yup.string().required().max(30),
 });
 
@@ -58,7 +69,11 @@ export const classSchema = Yup.object().shape({
     .max(30)
     .matches(/^[a-zA-Z\u0590-\u05FF\u200f\u200e ']+$/, formErrors.SPECIAL_CHARS)
     .required(),
-  maxSeats: Yup.number().integer().positive().required(),
+  maxSeats: Yup.number()
+    .integer()
+    .positive()
+    .required()
+    .test("leading-zero", formErrors.LEADING_ZERO, hasLeadingZero),
 });
 
 export const validationCombinedLength = (values: {
