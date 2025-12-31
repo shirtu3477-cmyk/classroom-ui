@@ -88,7 +88,7 @@ const ClassroomCard: React.FC<IClassroomCardProps> = ({
             </CardActions>
           </Card>
           <Dialog open={sdialog} onClose={handleClose}>
-            <StudentsDialog students={classObj.students} handleClose={handleClose} />
+            <StudentsDialog students={classObj.students} />
           </Dialog>
         </>
       )}

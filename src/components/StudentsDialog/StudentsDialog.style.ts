@@ -6,6 +6,7 @@ export const useStyles = () =>
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
+      width: "13vw",
     },
     student: {
       display: "flex",

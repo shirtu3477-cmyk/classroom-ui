@@ -18,12 +18,10 @@ import {
 
 interface IStudentDialogProps {
   students: IStudent[];
-  handleClose: () => void;
 }
 
 const StudentsDialog: React.FC<IStudentDialogProps> = ({
-  students,
-  handleClose,
+  students
 }) => {
   const styles = useStyles();
   const dispatch = useDispatch();
@@ -32,10 +30,10 @@ const StudentsDialog: React.FC<IStudentDialogProps> = ({
     const response = await classroomApi.unAssignClass(studentId);
 
     if (response.error) toast.error(response.error);
-    else toast.info(`student ${response.id} was deleted from class ${classId}`);
-
-    dispatch(removeStudent({ studentId, classId }));
-    handleClose();
+    else {
+      toast.info(`student ${response.id} was deleted from class ${classId}`);
+      dispatch(removeStudent({ studentId, classId }));
+    }
   };
 
   return (
