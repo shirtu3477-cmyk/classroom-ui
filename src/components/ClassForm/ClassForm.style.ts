@@ -14,11 +14,12 @@ export const useStyles = () =>
       marginBottom: 8,
       marginLeft: 12,
       marginRight: 12,
+      width: "13vw",
     },
     submit: {
       marginTop: 8,
     },
     title: {
-      marginBottom: '3%'
-    }
+      marginBottom: "3%",
+    },
   });

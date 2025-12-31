@@ -33,7 +33,7 @@ const isClassIdValid = (classId: string) => {
 const hasLeadingZero = (
   value: number | null | undefined,
   context: Yup.TestContext<Yup.AnyObject>
-) => value ? !context.originalValue.startsWith("0") : true;
+) => (value ? !context.originalValue.startsWith("0") : true);
 
 export const studentSchema = Yup.object().shape({
   id: Yup.string()
@@ -54,11 +54,12 @@ export const studentSchema = Yup.object().shape({
       formErrors.SPECIAL_CHARS
     ),
   age: Yup.number()
+    .typeError(formErrors.VALID_NUM)
     .integer()
     .positive()
     .nullable()
     .test("leading-zero", formErrors.LEADING_ZERO, hasLeadingZero),
-  profession: Yup.string().required().max(30),
+  profession: Yup.string().required().max(30, formErrors.MAX_LENGTH_30),
 });
 
 export const classSchema = Yup.object().shape({
@@ -66,10 +67,11 @@ export const classSchema = Yup.object().shape({
     .test((value) => (value ? isClassIdValid(value) : false))
     .required(),
   name: Yup.string()
-    .max(30)
+    .max(30, formErrors.MAX_LENGTH_30)
     .matches(/^[a-zA-Z\u0590-\u05FF\u200f\u200e ']+$/, formErrors.SPECIAL_CHARS)
     .required(),
   maxSeats: Yup.number()
+    .typeError(formErrors.VALID_NUM)
     .integer()
     .positive()
     .required()
