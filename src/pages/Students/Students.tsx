@@ -1,17 +1,9 @@
-import { toast } from "react-toastify";
-import classroomApi from "../../api/api";
-import { useStyles } from "./Student.style";
-import React, { useCallback, useState } from "react";
-import { studentTableData } from "../../consts/studentsTable";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
-import ClassesDialog from "../../components/ClassesDialog/ClassesDialog";
 import {
   IStudenActionColumn,
   IStudent,
   IStudentDataColumn,
 } from "./Students.types";
 import {
-  Button,
   Dialog,
   Paper,
   Table,
@@ -20,6 +12,15 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { isAxiosError } from "axios";
+import { toast } from "react-toastify";
+import React, { useState } from "react";
+import classroomApi from "../../api/api";
+import { useStyles } from "./Student.style";
+import { studentTableData } from "../../consts/studentsTable";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import ClassesDialog from "../../components/ClassesDialog/ClassesDialog";
+import ActionTableCell from "../../components/ActionTableCell/ActionTableCell";
 
 const Students: React.FC = () => {
   const styles = useStyles();
@@ -27,14 +28,12 @@ const Students: React.FC = () => {
   const queryClient = useQueryClient();
 
   const handleDelete = async (id: string) => {
-    const response = await classroomApi.deleteStudent(id);
-
-    if (response) {
-      toast.error(response.error);
-      return;
+    try {
+      await classroomApi.deleteStudent(id);
+      queryClient.invalidateQueries({ queryKey: ["students"] });
+    } catch (e) {
+      if (isAxiosError(e)) toast.error(e.message);
     }
-
-    queryClient.invalidateQueries({ queryKey: ["students"] });
   };
 
   const { data } = useQuery({
@@ -49,35 +48,11 @@ const Students: React.FC = () => {
 
   const students: IStudent[] = data;
 
-  const assignCellRender = useCallback(
-    (row: IStudent) => (
-      <TableCell key={`${row.id}-assign`} align="center">
-        <Button
-          variant="outlined"
-          disabled={row.classId ? true : false}
-          onClick={() => setAssignStudent(row)}
-        >
-          Assign to class
-        </Button>
-      </TableCell>
-    ),
-    []
-  );
+  const setStudentForAssign = (id: string) => {
+    const student = students.find((student) => student.id === id);
 
-  const deleteCellRender = useCallback(
-    (row: IStudent) => (
-      <TableCell key={`${row.id}-delete`} align="center">
-        <Button
-          variant="outlined"
-          disabled={row.classId ? true : false}
-          onClick={() => handleDelete(row.id)}
-        >
-          delete
-        </Button>
-      </TableCell>
-    ),
-    []
-  );
+    if (student) setAssignStudent(student);
+  };
 
   const studentTable: (IStudentDataColumn | IStudenActionColumn)[] = [
     ...studentTableData,
@@ -85,13 +60,13 @@ const Students: React.FC = () => {
       kind: "action",
       title: "Assign",
       key: "assign",
-      cellRender: assignCellRender,
+      action: setStudentForAssign,
     },
     {
       kind: "action",
       title: "Delete",
       key: "delete",
-      cellRender: deleteCellRender,
+      action: handleDelete,
     },
   ];
 
@@ -100,9 +75,9 @@ const Students: React.FC = () => {
       <Table>
         <TableHead style={styles.header}>
           <TableRow>
-            {studentTable.map((column) => (
-              <TableCell key={column.key} align="center">
-                {column.title}
+            {studentTable.map(({ key, title }) => (
+              <TableCell key={key} align="center">
+                {title}
               </TableCell>
             ))}
           </TableRow>
@@ -112,25 +87,28 @@ const Students: React.FC = () => {
             students?.map((student) => (
               <TableRow key={student.id}>
                 {studentTable.map((column) =>
-                  column.kind === "data" ? (
+                  "action" in column ? (
+                    <ActionTableCell
+                      key={`${student.id}-${column.key}`}
+                      text={column.title}
+                      id={student.id}
+                      classId={student.classId}
+                      action={column.action}
+                    />
+                  ) : (
                     <TableCell
                       key={`${student.id}-${column.key}`}
                       align="center"
                     >
                       {student[column.key]}
                     </TableCell>
-                  ) : (
-                    column.cellRender(student)
                   )
                 )}
               </TableRow>
             ))}
         </TableBody>
       </Table>
-      <Dialog
-        open={assignStudent ? true : false}
-        onClose={() => setAssignStudent(null)}
-      >
+      <Dialog open={!!assignStudent} onClose={() => setAssignStudent(null)}>
         <ClassesDialog student={assignStudent} handleClose={handleClose} />
       </Dialog>
     </Paper>

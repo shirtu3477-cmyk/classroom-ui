@@ -21,7 +21,7 @@ export interface IStudenActionColumn {
 
   key: string;
   title: string;
-  cellRender: (row: IStudent) => React.ReactElement;
+  action: (id: string) => void
 }
 
 export interface IStudentFormvalues {

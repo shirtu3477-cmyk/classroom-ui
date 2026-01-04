@@ -1,8 +1,10 @@
+import { isAxiosError } from "axios";
 import { toast } from "react-toastify";
 import React, { useState } from "react";
 import classroomApi from "../../api/api";
 import TrashIcon from "../../icons/TrashIcon";
 import { useStyles } from "./ClassroomCard.style";
+import { IClass } from "../../redux/slices/classes";
 import { selectClassById } from "../../redux/slices/classes";
 import StudentsDialog from "../StudentsDialog/StudentsDialog";
 import { useClassesSelector } from "../../redux/selectors/classes";
@@ -19,12 +21,14 @@ import {
 
 interface IClassroomCardProps {
   id: number;
-  updateClassesStore: (id: number) => void;
+  removeClassFromStore: (id: number) => void;
+  addClassToStore: (classObj: IClass) => void;
 }
 
 const ClassroomCard: React.FC<IClassroomCardProps> = ({
   id,
-  updateClassesStore,
+  removeClassFromStore,
+  addClassToStore,
 }) => {
   const styles = useStyles();
   const [sdialog, setSDialog] = useState<boolean>(false);
@@ -39,13 +43,13 @@ const ClassroomCard: React.FC<IClassroomCardProps> = ({
       return;
     }
 
-    const response = await classroomApi.deleteClass(id);
-
-    if (response) {
-      toast.error(response.error);
+    try {
+      removeClassFromStore(id);
+      await classroomApi.deleteClass(id);
+    } catch (e) {
+      if (isAxiosError(e)) toast.error(e.message);
+      addClassToStore(classObj);
     }
-
-    updateClassesStore(id);
   };
 
   const handleClose = () => setSDialog(false);

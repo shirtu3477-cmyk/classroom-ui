@@ -41,13 +41,13 @@ export const studentSchema = Yup.object().shape({
       value ? isValidILId(value) : false
     )
     .required(),
-  firstName: Yup.string()
+  firstName: Yup.string().trim().min(1)
     .required()
     .matches(
       /^[a-zA-Z\u0590-\u05FF\u200f\u200e ']+$/,
       formErrors.SPECIAL_CHARS
     ),
-  lastName: Yup.string()
+  lastName: Yup.string().trim().min(1)
     .required()
     .matches(
       /^[a-zA-Z\u0590-\u05FF\u200f\u200e ']+$/,
@@ -66,7 +66,7 @@ export const classSchema = Yup.object().shape({
   classId: Yup.string()
     .test((value) => (value ? isClassIdValid(value) : false))
     .required(),
-  name: Yup.string()
+  name: Yup.string().trim().min(1)
     .max(30, formErrors.MAX_LENGTH_30)
     .matches(/^[a-zA-Z\u0590-\u05FF\u200f\u200e ']+$/, formErrors.SPECIAL_CHARS)
     .required(),

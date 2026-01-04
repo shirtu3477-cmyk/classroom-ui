@@ -1,13 +1,7 @@
-import React from "react";
-import { toast } from "react-toastify";
-import classroomApi from "../../api/api";
-import { useDispatch } from "react-redux";
-import AddIcon from "@mui/icons-material/Add";
-import { useStyles } from "./ClassesDialog.style";
-import { addStudent } from "../../redux/slices/classes";
-import GraduateHatIcon from "../../icons/GraduateHatIcon";
-import { IStudent } from "../../pages/Students/Students.types";
-import { selectOpenClasses, useClassesSelector } from "../../redux/selectors/classes";
+import {
+  selectOpenClasses,
+  useClassesSelector,
+} from "../../redux/selectors/classes";
 import {
   Box,
   CardHeader,
@@ -16,6 +10,16 @@ import {
   CardContent,
   IconButton,
 } from "@mui/material";
+import { toast } from "react-toastify";
+import React, { useEffect } from "react";
+import classroomApi from "../../api/api";
+import { useDispatch } from "react-redux";
+import AddIcon from "@mui/icons-material/Add";
+import { useStyles } from "./ClassesDialog.style";
+import GraduateHatIcon from "../../icons/GraduateHatIcon";
+import { IStudent } from "../../pages/Students/Students.types";
+import { addStudent, setClasses } from "../../redux/slices/classes";
+import { isAxiosError } from "axios";
 
 interface IClassDialogProps {
   student: IStudent | null;
@@ -28,36 +32,48 @@ const ClassesDialog: React.FC<IClassDialogProps> = ({
 }) => {
   const styles = useStyles();
   const dispatch = useDispatch();
-  const classes = useClassesSelector(state => selectOpenClasses(state))
+  const classes = useClassesSelector((state) => selectOpenClasses(state));
 
-  const handleAssign = async (classId: number) => {
+  const handleAssign = async (classId: number, className: string) => {
     if (!student) return;
-
-    const response = await classroomApi.assignToClass(student.id, classId);
-
-    if (response.error) toast.error(response.error);
-    else {
-      toast.info(`student ${response.id} was assigned to ${classId}`);
+    try {
+      const response = await classroomApi.assignToClass(student.id, classId);
+      toast.info(`student ${response.firstName} ${response.lastName} was assigned to ${className}`);
 
       const studentUpdated = { ...student, classId };
       dispatch(addStudent({ student: studentUpdated, classId }));
+      handleClose();
+    } catch (e) {
+      if (isAxiosError(e)) toast.error(e.message);
     }
-    handleClose();
   };
+
+  const fetchClasses = async () => {
+    try {
+      const classes = await classroomApi.getClasses();
+      dispatch(setClasses(classes));
+    } catch (e) {
+      toast.error("classroom server is offline :(");
+    }
+  };
+
+  useEffect(() => {
+    if (classes.length === 0) fetchClasses();
+  }, []);
 
   return (
     <Box>
       <Card style={styles.classes}>
         <CardHeader title="Avialable Classes"></CardHeader>
         <CardContent>
-          {classes.map((clas) => (
-            <Box key={clas.classId} style={styles.clas}>
+          {classes.length > 0 ? classes.map(({ classId, name }) => (
+            <Box key={classId} style={styles.clas}>
               <GraduateHatIcon />
               <Box>
-                <Typography>{clas.name}</Typography>
+                <Typography>{name}</Typography>
               </Box>
               <IconButton
-                onClick={() => handleAssign(clas.classId)}
+                onClick={() => handleAssign(classId, name)}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
@@ -67,7 +83,7 @@ const ClassesDialog: React.FC<IClassDialogProps> = ({
                 <AddIcon color="primary" />
               </IconButton>
             </Box>
-          ))}
+          )) : <Typography>No available classes</Typography>}
         </CardContent>
       </Card>
     </Box>

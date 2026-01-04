@@ -5,7 +5,6 @@ export const useStyles = () =>
     menuButton: {
       height: '9vh',
       display: "flex",
-      alignItems: "center",
     },
     item: {
       marginLeft: '1.5%',

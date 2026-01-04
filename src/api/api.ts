@@ -17,105 +17,43 @@ class ClassroomApi {
   }
 
   getClasses = async () => {
-    try {
-      const response = await this.api.get("/class");
-      return response.data;
-    } catch (e) {
-      return axios.isAxiosError(e) && { error: e.message, status: e.status };
-    }
+    const response = await this.api.get("/class");
+    return response.data;
   };
 
   createClass = async (data: IClassCreate) => {
-    try {
-      const response = await this.api.post("/class", data);
-      return response.data;
-    } catch (e) {
-      return (
-        axios.isAxiosError(e) && {
-          error: e.message,
-          status: e.status,
-        }
-      );
-    }
+    const response = await this.api.post("/class", data);
+    return response.data;
   };
 
   deleteClass = async (id: number) => {
-    try {
-      await this.api.delete(`/class/${id}`);
-    } catch (e) {
-      return (
-        axios.isAxiosError(e) && {
-          error: e.message,
-          status: e.status,
-        }
-      );
-    }
+    await this.api.delete(`/class/${id}`);
   };
 
   createStudent = async (data: IStudentCreate) => {
-    try {
-      const response = await this.api.post("/student", data);
-      return response.data;
-    } catch (e) {
-      return (
-        axios.isAxiosError(e) && {
-          error: e.message,
-          status: e.status,
-        }
-      );
-    }
+    const response = await this.api.post("/student", data);
+    return response.data;
   };
 
   getStudents = async () => {
-    try {
-      const response = await this.api.get("/student");
-      return response.data;
-    } catch (e) {
-      return axios.isAxiosError(e) && { error: e.message, status: e.status };
-    }
+    const response = await this.api.get("/student");
+    return response.data;
   };
 
   deleteStudent = async (id: string) => {
-    try {
-      await this.api.delete(`/student/${id}`);
-    } catch (e) {
-      return (
-        axios.isAxiosError(e) && {
-          error: e.message,
-          status: e.status,
-        }
-      );
-    }
+    await this.api.delete(`/student/${id}`);
   };
 
   assignToClass = async (id: string, classId: number) => {
-    try {
-      const response = await this.api.patch(`/student/${id}`, {
-        classId: classId,
-      });
-      return response.data;
-    } catch (e) {
-      return (
-        axios.isAxiosError(e) && {
-          error: e.message,
-          status: e.status,
-        }
-      );
-    }
+    const response = await this.api.patch(`/student/${id}`, {
+      classId: classId,
+    });
+    return response.data;
   };
 
   unAssignClass = async (id: string) => {
-    try {
-      const response = await this.api.patch(`/student/${id}/unassign`);
-      return response.data;
-    } catch (e) {
-      return (
-        axios.isAxiosError(e) && {
-          error: e.message,
-          status: e.status,
-        }
-      );
-    }
+    const response = await this.api.patch(`/student/${id}/unassign`);
+    return response.data;
   };
 }
 

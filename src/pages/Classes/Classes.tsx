@@ -1,28 +1,48 @@
-import React from "react";
 import { Box } from "@mui/material";
+import { toast } from "react-toastify";
+import React, { useEffect } from "react";
+import classroomApi from "../../api/api";
 import { useDispatch } from "react-redux";
 import { useStyles } from "./Classes.style";
-import { IClass, setClasses } from "../../redux/slices/classes";
 import { useClassesSelector } from "../../redux/selectors/classes";
 import ClassroomCard from "../../components/ClassroomCard/ClassroomCard";
+import { addClass, IClass, removeClass, setClasses } from "../../redux/slices/classes";
 
 const Classes: React.FC = () => {
   const styles = useStyles();
   const classes = useClassesSelector((state) => state.classes);
   const dispatch = useDispatch();
 
-  const updateClassesStore = (id: number) => {
-    dispatch(setClasses(classes.filter((clas) => clas.classId !== id)));
+  const removeClassFromStore = (id: number) => {
+    dispatch(removeClass(id));
   };
+
+  const addClassToStore = (classObj: IClass) => {
+    dispatch(addClass(classObj))
+  }
+
+  const fetchClasses = async () => {
+    try {
+      const classes = await classroomApi.getClasses();
+      dispatch(setClasses(classes));
+    } catch (e) {
+      toast.error("classroom server is offline :(");
+    }
+  };
+
+  useEffect(() => {
+    if (classes.length === 0) fetchClasses();
+  }, []);
 
   return (
     <Box style={styles.classes}>
       {classes.length ? (
-        classes.map((clas: IClass) => (
+        classes.map(({ classId }) => (
           <ClassroomCard
-            updateClassesStore={updateClassesStore}
-            key={clas.classId}
-            id={clas.classId}
+            removeClassFromStore={removeClassFromStore}
+            addClassToStore={addClassToStore}
+            key={classId}
+            id={classId}
           />
         ))
       ) : (

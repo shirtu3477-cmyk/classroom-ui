@@ -1,5 +1,6 @@
 import React from "react";
 import { useFormik } from "formik";
+import { isAxiosError } from "axios";
 import { toast } from "react-toastify";
 import classroomApi from "../../api/api";
 import { useDispatch } from "react-redux";
@@ -8,24 +9,28 @@ import { addClass } from "../../redux/slices/classes";
 import { classSchema } from "../../utils/validations";
 import { fields } from "../../consts/classFormFields";
 import { Box, TextField, Typography, FormControl, Button } from "@mui/material";
-import { IClassCreate, IClassFormvalues } from "../../pages/Classes/Classes.types";
+import {
+  IClassCreate,
+  IClassFormvalues,
+} from "../../pages/Classes/Classes.types";
 
 const ClassForm: React.FC = () => {
   const styles = useStyles();
   const dispatch = useDispatch();
 
   const handleSubmit = async (values: IClassCreate) => {
-    const response = await classroomApi.createClass(values);
-
-    if (response.error) toast.error(response.error);
-    else {
+    try {
+      const response = await classroomApi.createClass(values);
       dispatch(
         addClass({
           ...response,
           students: [],
         })
       );
-      toast.info(`Class ${response.classId} was created`);
+      toast.info(`Class ${response.name} was created`);
+      formik.resetForm();
+    } catch (e) {
+      if (isAxiosError(e)) toast.error(e.message);
     }
   };
 
@@ -44,16 +49,16 @@ const ClassForm: React.FC = () => {
       </Typography>
       <form onSubmit={formik.handleSubmit}>
         <FormControl style={styles.form}>
-          {fields.map((field) => (
+          {fields.map(({ id, label }) => (
             <TextField
-              key={field.id}
+              key={id}
               style={styles.inputs}
-              id={field.id}
-              label={field.label}
-              value={formik.values[field.id] ?? ""}
+              id={id}
+              label={label}
+              value={formik.values[id] ?? ""}
               onChange={formik.handleChange}
-              error={formik.errors[field.id] ? true : false}
-              helperText={formik.errors[field.id]}
+              error={!!formik.errors[id]}
+              helperText={formik.errors[id]}
               color="info"
             />
           ))}

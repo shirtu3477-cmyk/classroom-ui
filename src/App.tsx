@@ -1,15 +1,10 @@
-import classroomApi from "./api/api";
-import { useDispatch } from "react-redux";
-import Create from "./pages/Create/Create";
+import { ROUTES } from "./consts/routes";
 import { createTheme } from "@mui/material";
-import Classes from "./pages/Classes/Classes";
+import {ToastContainer } from "react-toastify";
 import Navbar from "./components/Navbar/Navbar";
-import { toast, ToastContainer } from "react-toastify";
-import Students from "./pages/Students/Students";
+import React, { useMemo, useState } from "react";
 import { ColorMode, COLORS } from "./consts/theme";
-import { setClasses } from "./redux/slices/classes";
 import { PaletteMode, ThemeProvider } from "@mui/material";
-import React, { useEffect, useMemo, useState } from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
 
 const App: React.FC = () => {
@@ -37,27 +32,14 @@ const App: React.FC = () => {
     [mode]
   );
 
-  const dispatch = useDispatch();
-
-  const fetchClasses = async () => {
-    const classes = await classroomApi.getClasses();
-
-    if (classes.error) toast.error('classroom server is offline :(') 
-    else dispatch(setClasses(classes));
-  };
-
-  useEffect(() => {
-    fetchClasses();
-  }, []);
-  
   return (
     <HashRouter>
       <ThemeProvider theme={theme}>
         <Navbar colorMode={colorMode} />
         <Routes>
-          <Route path="/" element={<Classes />} />
-          <Route path="/students" element={<Students />} />
-          <Route path="create" element={<Create />} />
+          {ROUTES.map((route) => (
+            <Route key={route.path} path={route.path} element={route.element}></Route>
+          ))}
         </Routes>
         <ToastContainer />
       </ThemeProvider>

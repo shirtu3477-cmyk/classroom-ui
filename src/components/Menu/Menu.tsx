@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useStyles } from "./Menu.style";
-import { items } from "../../consts/menuItems";
+import { ROUTES } from "../../consts/routes";
 import { MenuItem, Box, Drawer } from "@mui/material";
 
 interface IMenuProps {
@@ -15,14 +15,10 @@ const Menu: React.FC<IMenuProps> = ({ open, setOpen }) => {
   return (
     <Drawer open={open} onClose={() => setOpen(!open)}>
       <Box style={styles.menu}>
-        {items.map((item) => (
-          <MenuItem key={item.title}>
-            <Link
-              style={styles.link}
-              to={item.path}
-              onClick={() => setOpen(false)}
-            >
-              {item.title}
+        {ROUTES.map(({ path, label }) => (
+          <MenuItem key={label}>
+            <Link style={styles.link} to={path} onClick={() => setOpen(false)}>
+              {label}
             </Link>
           </MenuItem>
         ))}

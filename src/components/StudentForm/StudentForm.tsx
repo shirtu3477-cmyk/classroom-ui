@@ -1,10 +1,3 @@
-import React from "react";
-import { useFormik } from "formik";
-import { toast } from "react-toastify";
-import classroomApi from "../../api/api";
-import { useStyles } from "./StudentForm.style";
-import { fields } from "../../consts/studentFormFields";
-import { Box, TextField, Typography, FormControl, Button } from "@mui/material";
 import {
   studentSchema,
   validationCombinedLength,
@@ -13,13 +6,29 @@ import {
   IStudentCreate,
   IStudentFormvalues,
 } from "../../pages/Students/Students.types";
+import React from "react";
+import { useFormik } from "formik";
+import { isAxiosError } from "axios";
+import { toast } from "react-toastify";
+import classroomApi from "../../api/api";
+import { useStyles } from "./StudentForm.style";
+import { fields } from "../../consts/studentFormFields";
+import { Box, TextField, Typography, FormControl, Button } from "@mui/material";
 
 const StudentForm: React.FC = () => {
   const handleSubmit = async (values: IStudentCreate) => {
-    const response = await classroomApi.createStudent(values);
-
-    if (response.error) toast.error(response.error);
-    else toast.info(`student ${response.id} was created`);
+    try {
+      const response = await classroomApi.createStudent({
+        ...values,
+        age: values.age ? values.age : null,
+      });
+      toast.info(
+        `student ${response.firstName} ${response.lastName} was created`
+      );
+      formik.resetForm()
+    } catch (e) {
+      if (isAxiosError(e)) toast.error(e.message);
+    }
   };
 
   const formik = useFormik<IStudentFormvalues>({
@@ -45,16 +54,16 @@ const StudentForm: React.FC = () => {
       </Typography>
       <form onSubmit={formik.handleSubmit}>
         <FormControl style={styles.form}>
-          {fields.map((field) => (
+          {fields.map(({ id, label }) => (
             <TextField
-              key={field.id}
+              key={id}
               style={styles.inputs}
-              id={field.id}
-              label={field.label}
-              value={formik.values[field.id] ?? ""}
+              id={id}
+              label={label}
+              value={formik.values[id] ?? ""}
               onChange={formik.handleChange}
-              error={formik.errors[field.id] ? true : false}
-              helperText={formik.errors[field.id]}
+              error={!!formik.errors[id]}
+              helperText={formik.errors[id]}
               color="info"
             />
           ))}
